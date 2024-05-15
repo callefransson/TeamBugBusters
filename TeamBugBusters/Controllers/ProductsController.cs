@@ -24,7 +24,7 @@ namespace TeamBugBusters.Controllers
         {
             var categories = await _context.Products
                 .Include(x => x.Category)
-                .FirstOrDefaultAsync();
+                .ToListAsync();
             return View(await _context.Products.ToListAsync());
         }
 
@@ -50,15 +50,6 @@ namespace TeamBugBusters.Controllers
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
-            //var categories = new List<Category>
-            //{
-            //    new Category { CategoryId = 1, CategoryName = "Pc"},
-            //    new Category { CategoryId = 2, CategoryName = "Mousepad"},
-            //    new Category { CategoryId = 3, CategoryName = "Monitor"},
-            //    new Category { CategoryId = 4, CategoryName = "Mouse"},
-            //    new Category { CategoryId = 5, CategoryName = "Keyboard"}
-            //};
-            //ViewBag.categoriesList = new SelectList(categories, "CategoryId", "CategoryName");
             return View();
         }
 
@@ -67,29 +58,14 @@ namespace TeamBugBusters.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductDescription,FkCategoryId,ProductStock,ProductDiscount,ProductPrice")] Product product)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(product);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(product);
-        //}
-        public async Task<IActionResult> Create(int? categoryId)
+        public async Task<IActionResult> Create(int? categoryId, Product product)
         {
-            if (categoryId == null)
+            if(categoryId == null)
             {
                 return NotFound();
             }
-            var products = await _context.Products
-                .Include(p => p.Category)
-                .Where(p => p.Category.CategoryId == categoryId)
-                .ToListAsync();
-            var product = new Product();
             product.FkCategoryId = categoryId.Value;
-            if (product!= null)
+            if (product != null)
             {
                 _context.Add(product);
                 await _context.SaveChangesAsync();
