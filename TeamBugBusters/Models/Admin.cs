@@ -17,9 +17,7 @@ namespace TeamBugBusters.Models
         public string AdminPersonalNumber { get; set; }
         [Required]
         [StringLength(100,MinimumLength =5, ErrorMessage = "Password can't be longer then 100 characters or less than 5")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
-
-        public ICollection<Product>? Products { get; set; }
-
     }
 }

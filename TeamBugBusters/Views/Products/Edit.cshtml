@@ -29,11 +29,6 @@
                 <span asp-validation-for="ProductStock" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Category" class="control-label"></label>
-                <select asp-for="Category" class="form-control"></select>
-                <span asp-validation-for="Category" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="ProductDiscount" class="control-label"></label>
                 <input asp-for="ProductDiscount" class="form-control" />
                 <span asp-validation-for="ProductDiscount" class="text-danger"></span>
@@ -42,11 +37,6 @@
                 <label asp-for="ProductPrice" class="control-label"></label>
                 <input asp-for="ProductPrice" class="form-control" />
                 <span asp-validation-for="ProductPrice" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FkAdminId" class="control-label"></label>
-                <select asp-for="FkAdminId" class="form-control" asp-items="ViewBag.FkAdminId"></select>
-                <span asp-validation-for="FkAdminId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

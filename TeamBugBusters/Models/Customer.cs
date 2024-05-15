@@ -14,6 +14,7 @@ namespace TeamBugBusters.Models
         public string CustomerAdress { get; set; }
         [Required]
         [StringLength(100, MinimumLength = 5, ErrorMessage = "Password can't be longer then 100 characters or less than 5")]
+        [DataType(DataType.Password)]
         public string CustomerPassword { get; set; }
         [Required]
         [StringLength(20, ErrorMessage ="Phone number can't be longer than 20 characters")]

@@ -22,8 +22,10 @@ namespace TeamBugBusters.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Products.Include(p => p.Admin);
-            return View(await applicationDbContext.ToListAsync());
+            var categories = await _context.Products
+                .Include(x => x.Category)
+                .FirstOrDefaultAsync();
+            return View(await _context.Products.ToListAsync());
         }
 
         // GET: Products/Details/5
@@ -35,7 +37,6 @@ namespace TeamBugBusters.Controllers
             }
 
             var product = await _context.Products
-                .Include(p => p.Admin)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
@@ -48,7 +49,16 @@ namespace TeamBugBusters.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["FkAdminId"] = new SelectList(_context.Admins, "AdminId", "AdminEmail");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
+            //var categories = new List<Category>
+            //{
+            //    new Category { CategoryId = 1, CategoryName = "Pc"},
+            //    new Category { CategoryId = 2, CategoryName = "Mousepad"},
+            //    new Category { CategoryId = 3, CategoryName = "Monitor"},
+            //    new Category { CategoryId = 4, CategoryName = "Mouse"},
+            //    new Category { CategoryId = 5, CategoryName = "Keyboard"}
+            //};
+            //ViewBag.categoriesList = new SelectList(categories, "CategoryId", "CategoryName");
             return View();
         }
 
@@ -57,15 +67,34 @@ namespace TeamBugBusters.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductDescription,ProductStock,Category,ProductDiscount,ProductPrice,FkAdminId")] Product product)
+        //public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductDescription,FkCategoryId,ProductStock,ProductDiscount,ProductPrice")] Product product)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(product);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(product);
+        //}
+        public async Task<IActionResult> Create(int? categoryId)
         {
-            if (ModelState.IsValid)
+            if (categoryId == null)
+            {
+                return NotFound();
+            }
+            var products = await _context.Products
+                .Include(p => p.Category)
+                .Where(p => p.Category.CategoryId == categoryId)
+                .ToListAsync();
+            var product = new Product();
+            product.FkCategoryId = categoryId.Value;
+            if (product!= null)
             {
                 _context.Add(product);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
-            ViewData["FkAdminId"] = new SelectList(_context.Admins, "AdminId", "AdminEmail", product.FkAdminId);
             return View(product);
         }
 
@@ -82,7 +111,6 @@ namespace TeamBugBusters.Controllers
             {
                 return NotFound();
             }
-            ViewData["FkAdminId"] = new SelectList(_context.Admins, "AdminId", "AdminEmail", product.FkAdminId);
             return View(product);
         }
 
@@ -91,7 +119,7 @@ namespace TeamBugBusters.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductDescription,ProductStock,Category,ProductDiscount,ProductPrice,FkAdminId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductDescription,ProductStock,ProductDiscount,ProductPrice")] Product product)
         {
             if (id != product.ProductId)
             {
@@ -118,7 +146,6 @@ namespace TeamBugBusters.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FkAdminId"] = new SelectList(_context.Admins, "AdminId", "AdminEmail", product.FkAdminId);
             return View(product);
         }
 
@@ -131,7 +158,6 @@ namespace TeamBugBusters.Controllers
             }
 
             var product = await _context.Products
-                .Include(p => p.Admin)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {

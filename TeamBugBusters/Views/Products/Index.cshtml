@@ -22,16 +22,13 @@
                 @Html.DisplayNameFor(model => model.ProductStock)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.ProductDiscount)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ProductPrice)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Admin)
+               Category
             </th>
             <th></th>
         </tr>
@@ -49,17 +46,14 @@
                 @Html.DisplayFor(modelItem => item.ProductStock)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Category)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.ProductDiscount)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ProductPrice)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Admin.AdminEmail)
-            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |

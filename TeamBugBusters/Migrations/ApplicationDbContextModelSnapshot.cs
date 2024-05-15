@@ -3,24 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamBugBusters.Data;
 
 #nullable disable
 
-namespace TeamBugBusters.Data.Migrations
+namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240514095305_First Migration")]
-    partial class FirstMigration
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -297,6 +294,24 @@ namespace TeamBugBusters.Data.Migrations
                     b.ToTable("Carts");
                 });
 
+            modelBuilder.Entity("TeamBugBusters.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("TeamBugBusters.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
@@ -392,10 +407,7 @@ namespace TeamBugBusters.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
-                    b.Property<int>("Category")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FkAdminId")
+                    b.Property<int>("FkCategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProductDescription")
@@ -403,7 +415,7 @@ namespace TeamBugBusters.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("ProductDiscount")
+                    b.Property<int?>("ProductDiscount")
                         .HasColumnType("int");
 
                     b.Property<string>("ProductName")
@@ -419,7 +431,7 @@ namespace TeamBugBusters.Data.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.HasIndex("FkAdminId");
+                    b.HasIndex("FkCategoryId");
 
                     b.ToTable("Products");
                 });
@@ -532,16 +544,16 @@ namespace TeamBugBusters.Data.Migrations
 
             modelBuilder.Entity("TeamBugBusters.Models.Product", b =>
                 {
-                    b.HasOne("TeamBugBusters.Models.Admin", "Admin")
+                    b.HasOne("TeamBugBusters.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("FkAdminId")
+                        .HasForeignKey("FkCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Admin");
+                    b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("TeamBugBusters.Models.Admin", b =>
+            modelBuilder.Entity("TeamBugBusters.Models.Category", b =>
                 {
                     b.Navigation("Products");
                 });
