@@ -25,6 +25,5 @@ namespace TeamBugBusters.Models
         [Required]
         [StringLength(100, MinimumLength = 5, ErrorMessage = "Email can't be longer then 100 characters or less than 5")]
         public string CustomerEmail { get; set; }
-        public ICollection<Cart>? Carts { get; set; }
     }
 }

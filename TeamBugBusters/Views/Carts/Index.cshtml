@@ -1,0 +1,34 @@
+﻿@model IEnumerable<TeamBugBusters.Models.CartItems>
+@{
+    ViewData["Title"] = "List";
+}
+<h1 class="display-4">Cart</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.ProductPrice)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.ProductPrice)
+                </td>
+                <td>
+                    <a asp-action="" class="btn btn-outline-primary">Continue to checkout</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

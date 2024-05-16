@@ -77,6 +77,7 @@ namespace TeamBugBusters.Controllers
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
             if (id == null)
             {
                 return NotFound();
@@ -95,34 +96,35 @@ namespace TeamBugBusters.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductDescription,ProductStock,ProductDiscount,ProductPrice")] Product product)
+        public async Task<IActionResult> Edit(int id, int? categoryId, Product product)
         {
-            if (id != product.ProductId)
+            if (id != product.ProductId || categoryId == null)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            product.FkCategoryId = categoryId.Value;
+            if (product != null)
             {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.ProductId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(product);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
             return View(product);
+    }
+        public async Task<IActionResult> AddToCart(int? productId)
+        {
+            if (productId == null)
+            {
+                return NotFound();
+            }
+            var addItems = await _context.CartItems
+                .Include(ci => ci.Cart)
+                .ToListAsync();
+            if (addItems != null)
+            {
+                return RedirectToAction("Index", "Carts");
+            }
+            return View(addItems);
         }
 
         // GET: Products/Delete/5
