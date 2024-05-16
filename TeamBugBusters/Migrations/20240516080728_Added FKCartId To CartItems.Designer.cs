@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamBugBusters.Data;
 
@@ -11,9 +12,11 @@ using TeamBugBusters.Data;
 namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240516080728_Added FKCartId To CartItems")]
+    partial class AddedFKCartIdToCartItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,6 +276,12 @@ namespace TeamBugBusters.Migrations
                     b.Property<int>("AmountOfItems")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TotalDiscount")
                         .HasColumnType("int");
 
@@ -280,6 +289,10 @@ namespace TeamBugBusters.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("CartId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Carts");
                 });
@@ -530,6 +543,17 @@ namespace TeamBugBusters.Migrations
                         .HasForeignKey("RoleId");
                 });
 
+            modelBuilder.Entity("TeamBugBusters.Models.Cart", b =>
+                {
+                    b.HasOne("TeamBugBusters.Models.Customer", null)
+                        .WithMany("Carts")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("TeamBugBusters.Models.Product", null)
+                        .WithMany("Carts")
+                        .HasForeignKey("ProductId");
+                });
+
             modelBuilder.Entity("TeamBugBusters.Models.CartItems", b =>
                 {
                     b.HasOne("TeamBugBusters.Models.Cart", "Cart")
@@ -587,6 +611,16 @@ namespace TeamBugBusters.Migrations
             modelBuilder.Entity("TeamBugBusters.Models.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("TeamBugBusters.Models.Customer", b =>
+                {
+                    b.Navigation("Carts");
+                });
+
+            modelBuilder.Entity("TeamBugBusters.Models.Product", b =>
+                {
+                    b.Navigation("Carts");
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.Role", b =>
