@@ -63,4 +63,48 @@
         </tr>
 }
     </tbody>
-</table>
+    </table>
+    <div class="row">
+        <div class="col-sm-2">
+            <h1>Categories</h1>
+        </div>
+        <div class="col-sm-10">
+        <div class="d-flex gap-3 flex-row flex-wrap justify-content-start">
+            @foreach (var item in Model)
+            {
+                <div class="card" style="width: 22rem;">
+                    <img class="card-img-top" src="https://www.komplett.se/img/p/1440/1212724.jpg?view=gallery&orientation=horizontal" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.ProductName)</h5>
+                        <p class="card-text">@Html.DisplayFor(modelItem => item.ProductDescription)</p>
+                        <p class="card-text">Price: @Html.DisplayFor(modelItem => item.ProductPrice):-</p>
+                        <p class="card-text">
+                            @switch (item.ProductStock)
+                            {
+                                case int n when (n > 10):
+                                    <span style="color:green">Amount in stock: @Html.DisplayFor(modelItem => item.ProductStock)</span>
+                                    break;
+                                case int n when (n > 5 && n <= 10):
+                                    <span style="color:darkorange">Amount in stock: @Html.DisplayFor(modelItem => item.ProductStock)</span>
+                                    break;
+                                case int n when (n > 0 && n <= 5):
+                                    <span style="color:red">Amount in stock: @Html.DisplayFor(modelItem => item.ProductStock)</span>
+                                    break;
+                                case 0:
+                                    <span>This product is sold out</span>
+                                    break;
+                                default:
+                                    <span>Amount in stock: @Html.DisplayFor(modelItem => item.ProductStock)</span>
+                                    break;
+                            }
+                        </p>
+                        <a href="#" class="btn btn-primary">Buy now</a>
+                    </div>
+                </div>
+            }
+        </div>
+        </div>
+    </div>
+   
+
+<link rel="stylesheet" href="/css/products.css" />
