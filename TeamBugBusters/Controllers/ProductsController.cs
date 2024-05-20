@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using TeamBugBusters.Data;
 using TeamBugBusters.Models;
@@ -26,6 +27,63 @@ namespace TeamBugBusters.Controllers
                 .Include(x => x.Category)
                 .ToListAsync();
             return View(await _context.Products.ToListAsync());
+        }
+
+        public async Task<IActionResult> AddToCart(int? productId)
+        {
+            if (productId == null)
+            {
+                return NotFound();
+            }
+
+            var cartItem = await _context.CartItems
+                .Include(ci => ci.Cart)
+                .Include(p => p.Product)
+                .FirstOrDefaultAsync(p => p.FkProductId == productId);
+
+            if (cartItem != null)
+            {
+
+                
+                _context.Update(cartItem);
+            }
+            else
+            {
+
+                var newCartItem = new CartItems
+                {
+                    FkProductId = productId.Value,
+                    FkCartId = GetOrCreateCartId()
+                };
+
+                _context.CartItems.Add(newCartItem);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("ShowCart");
+        }
+
+        private int GetOrCreateCartId()
+        {
+            var cart = _context.Carts.FirstOrDefault();
+            if (cart == null)
+            {
+                cart = new Cart();
+                _context.Carts.Add(cart);
+                _context.SaveChanges();
+            }
+            return cart.CartId;
+        }
+
+        public IActionResult ShowCart()
+        {
+            var cart = _context.CartItems
+                .Include(c => c.Cart)
+                .Include(p => p.Product)
+                .ToList();
+            
+            return View(cart);
         }
 
         // GET: Products/Details/5
@@ -111,21 +169,6 @@ namespace TeamBugBusters.Controllers
             }
             return View(product);
     }
-        public async Task<IActionResult> AddToCart(int? productId)
-        {
-            if (productId == null)
-            {
-                return NotFound();
-            }
-            var addItems = await _context.CartItems
-                .Include(ci => ci.Cart)
-                .ToListAsync();
-            if (addItems != null)
-            {
-                return RedirectToAction("Index", "Carts");
-            }
-            return View(addItems);
-        }
 
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)

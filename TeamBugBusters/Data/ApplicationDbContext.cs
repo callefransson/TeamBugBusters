@@ -18,5 +18,9 @@ namespace TeamBugBusters.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Role> Roles {  get; set; }
         public DbSet<Category> Categories { get; set; }
+
+        // Det som vi hämtar från API:et, ska inte vara med här 
+        // MVC ska helst inte prata med databas
+        // Customer, products och categories i API, de andra i mvc
     }
 }

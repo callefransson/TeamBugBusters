@@ -4,6 +4,9 @@
 }
 <h1 class="display-4">Cart</h1>
 
+<div>
+    <a asp-action="" class="btn btn-outline-success">Continue to checkout</a>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -25,10 +28,25 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Product.ProductPrice)
                 </td>
-                <td>
-                    <a asp-action="" class="btn btn-outline-primary">Continue to checkout</a>
-                </td>
+                    
             </tr>
         }
     </tbody>
 </table>
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
