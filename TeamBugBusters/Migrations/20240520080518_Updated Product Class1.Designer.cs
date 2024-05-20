@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamBugBusters.Data;
 
@@ -11,9 +12,11 @@ using TeamBugBusters.Data;
 namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240520080518_Updated Product Class1")]
+    partial class UpdatedProductClass1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -288,7 +291,7 @@ namespace TeamBugBusters.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemsId"));
 
-                    b.Property<int?>("FkCartId")
+                    b.Property<int>("FkCartId")
                         .HasColumnType("int");
 
                     b.Property<int?>("FkCustomerId")
@@ -534,7 +537,9 @@ namespace TeamBugBusters.Migrations
                 {
                     b.HasOne("TeamBugBusters.Models.Cart", "Cart")
                         .WithMany("CartItems")
-                        .HasForeignKey("FkCartId");
+                        .HasForeignKey("FkCartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TeamBugBusters.Models.Customer", "Customer")
                         .WithMany()
