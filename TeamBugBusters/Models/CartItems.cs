@@ -14,7 +14,7 @@ namespace TeamBugBusters.Models
         public int FkProductId { get; set; }
         public Product? Product { get; set; }
         [ForeignKey("Cart")]
-        public int FkCartId { get; set; }
+        public int? FkCartId { get; set; }
         public Cart? Cart { get; set; }
     }
 }
