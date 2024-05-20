@@ -15,6 +15,7 @@ namespace TeamBugBusters.Models
         public string ProductDescription { get; set; }
         public int ProductStock {  get; set; }
         public int? ProductDiscount { get; set; }
+        public string ProductImage { get; set; }
         public int ProductPrice { get; set; }
         [ForeignKey("Category")]
         public int FkCategoryId { get; set; }
