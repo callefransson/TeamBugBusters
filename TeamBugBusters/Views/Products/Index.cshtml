@@ -1,12 +1,12 @@
 ﻿@model IEnumerable<TeamBugBusters.Models.Product>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Products";
 }
 
-<h1>Index</h1>
+<h1 class="display-4">Our products</h1>
 
-<p>
+@* <p>
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
@@ -63,8 +63,8 @@
         </tr>
 }
     </tbody>
-    </table>
-    <div class="row">
+    </table> *@
+    <div class="row mt-5">
         <div class="col-sm-2">
             <h1>Categories</h1>
         </div>
@@ -73,7 +73,7 @@
             @foreach (var item in Model)
             {
                 <div class="card" style="width: 22rem;">
-                    <img class="card-img-top" src="https://www.komplett.se/img/p/1440/1212724.jpg?view=gallery&orientation=horizontal" alt="Card image cap">
+                    <img class="card-img-top" src="@Html.DisplayFor(modelItem=>item.ProductImage)" alt="Card image cap">
                     <div class="card-body">
                         <h5 class="card-title">@Html.DisplayFor(modelItem => item.ProductName)</h5>
                         <p class="card-text">@Html.DisplayFor(modelItem => item.ProductDescription)</p>
@@ -98,7 +98,7 @@
                                     break;
                             }
                         </p>
-                        <a href="#" class="btn btn-primary">Buy now</a>
+                        <a asp-action="AddToCart" asp-route-productId="@item.ProductId" class="btn btn-primary">Add to cart</a>
                     </div>
                 </div>
             }

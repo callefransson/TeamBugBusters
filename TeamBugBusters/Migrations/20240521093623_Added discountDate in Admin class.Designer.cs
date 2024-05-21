@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamBugBusters.Data;
 
@@ -11,9 +12,11 @@ using TeamBugBusters.Data;
 namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521093623_Added discountDate in Admin class")]
+    partial class AddeddiscountDateinAdminclass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,7 +272,7 @@ namespace TeamBugBusters.Migrations
                     b.Property<int>("AmountOfItems")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TotalDiscount")
+                    b.Property<int>("TotalDiscount")
                         .HasColumnType("int");
 
                     b.Property<int>("TotalPrice")
@@ -288,9 +291,6 @@ namespace TeamBugBusters.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemsId"));
 
-                    b.Property<int>("Discount")
-                        .HasColumnType("int");
-
                     b.Property<int?>("FkCartId")
                         .HasColumnType("int");
 
@@ -298,9 +298,6 @@ namespace TeamBugBusters.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("FkProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("CartItemsId");
@@ -430,9 +427,6 @@ namespace TeamBugBusters.Migrations
                     b.Property<DateTime?>("DiscountEndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("DiscountPrice")
-                        .HasColumnType("decimal(18, 2)");
-
                     b.Property<DateTime?>("DiscountStartDate")
                         .HasColumnType("datetime2");
 
@@ -455,8 +449,8 @@ namespace TeamBugBusters.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<decimal>("ProductPrice")
-                        .HasColumnType("decimal(18, 2)");
+                    b.Property<int>("ProductPrice")
+                        .HasColumnType("int");
 
                     b.Property<int?>("ProductStock")
                         .HasColumnType("int");

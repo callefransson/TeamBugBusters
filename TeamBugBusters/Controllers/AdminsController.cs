@@ -19,13 +19,74 @@ namespace TeamBugBusters.Controllers
             _context = context;
         }
 
-        // GET: Admins
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Admins.ToListAsync());
+            var categories = await _context.Products
+                .Include(x => x.Category)
+                .ToListAsync();
+            return View(await _context.Products.ToListAsync());
+        }
+        //GET: Products/AddDiscount
+        [HttpGet]
+        public IActionResult AddDiscount()
+        {
+            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductName");
+            return View();
+        }
+        //POST: Products/AddDiscount/5
+        [HttpPost]
+        public async Task<IActionResult> AddDiscount(int? productId)
+        {
+            if (productId == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
+
+            if (product != null)
+            {
+                return RedirectToAction("AddDiscountPrice", new { productId = productId });
+            }
+            else
+            {
+                return RedirectToAction("AddDiscount");
+            }
         }
 
-        // GET: Admins/Details/5
+        //GET: Products/AddDiscountPrice/5
+        [HttpGet]
+        [HttpGet]
+        public async Task<IActionResult> AddDiscountPrice(int? productId)
+        {
+            if (productId == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new ProductViewModel
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                CurrentPrice = product.ProductPrice
+            };
+
+            return View(viewModel);
+        }
+        //[HttpPost]
+        //public async Task<IActionResult> AddDiscountPrice()
+        //{
+        //    return View();
+        //}
+
+        // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,90 +94,83 @@ namespace TeamBugBusters.Controllers
                 return NotFound();
             }
 
-            var admin = await _context.Admins
-                .FirstOrDefaultAsync(m => m.AdminId == id);
-            if (admin == null)
+            var product = await _context.Products
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(admin);
+            return View(product);
         }
 
-        // GET: Admins/Create
+        // GET: Products/Create
         public IActionResult Create()
         {
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
             return View();
         }
 
-        // POST: Admins/Create
+        // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AdminId,AdminFullName,AdminEmail,AdminPersonalNumber,Password")] Admin admin)
+        public async Task<IActionResult> Create(int? categoryId, Product product)
         {
-            if (ModelState.IsValid)
+            if (categoryId == null)
             {
-                _context.Add(admin);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            return View(admin);
+            product.FkCategoryId = categoryId.Value;
+            if (product != null)
+            {
+                _context.Add(product);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return View(product);
         }
 
-        // GET: Admins/Edit/5
+        // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
             if (id == null)
             {
                 return NotFound();
             }
 
-            var admin = await _context.Admins.FindAsync(id);
-            if (admin == null)
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(admin);
+            return View(product);
         }
 
-        // POST: Admins/Edit/5
+        // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AdminId,AdminFullName,AdminEmail,AdminPersonalNumber,Password")] Admin admin)
+        public async Task<IActionResult> Edit(int id, int? categoryId, Product product)
         {
-            if (id != admin.AdminId)
+            if (id != product.ProductId || categoryId == null)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            product.FkCategoryId = categoryId.Value;
+            if (product != null)
             {
-                try
-                {
-                    _context.Update(admin);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AdminExists(admin.AdminId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(product);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
-            return View(admin);
+            return View(product);
         }
 
-        // GET: Admins/Delete/5
+        // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +178,29 @@ namespace TeamBugBusters.Controllers
                 return NotFound();
             }
 
-            var admin = await _context.Admins
-                .FirstOrDefaultAsync(m => m.AdminId == id);
-            if (admin == null)
+            var product = await _context.Products
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(admin);
+            return View(product);
         }
 
-        // POST: Admins/Delete/5
+        // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var admin = await _context.Admins.FindAsync(id);
-            if (admin != null)
+            var product = await _context.Products.FindAsync(id);
+            if (product != null)
             {
-                _context.Admins.Remove(admin);
+                _context.Products.Remove(product);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool AdminExists(int id)
-        {
-            return _context.Admins.Any(e => e.AdminId == id);
         }
     }
 }
