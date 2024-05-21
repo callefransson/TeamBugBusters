@@ -1,0 +1,48 @@
+﻿@model Order
+
+@{
+    ViewData["Title"] = "Order";
+}
+
+<h1>Checkout!</h1>
+
+
+<div>
+    <a asp-action="Index" asp-controller="Products" class="btn btn-outline-success">Back to webshop</a>
+</div>
+
+<br />
+
+<form asp-action="ActionName" asp-controller="ControllerName" method="post">
+    <p>Where do you want your order to be shipped?</p>
+    <div class="form-group">
+        <label asp-for="ShippingAdress" class="control-label"></label>
+        <input asp-for="ShippingAdress" class="form-control" />
+        <span asp-validation-for="ShippingAdress" class="text-danger"></span>
+    </div>
+    <div>
+        <a asp-action="" class="btn btn-success">Place order</a>
+    </div>
+</form>
+
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Total price</th>
+            <th>Total discount</th>
+            <th>Product name</th>
+            <th>Quantity</th>
+            <th>Product price</th>
+            <th>Product discount</th>
+            <th>Amount of items</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+
+

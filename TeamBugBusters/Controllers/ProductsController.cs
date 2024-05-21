@@ -43,8 +43,6 @@ namespace TeamBugBusters.Controllers
 
             if (cartItem != null)
             {
-
-                
                 _context.Update(cartItem);
             }
             else
@@ -76,14 +74,79 @@ namespace TeamBugBusters.Controllers
             return cart.CartId;
         }
 
+        [HttpPost]
+        public IActionResult UpdateQuantity(int id, string change)
+        {
+            var cartItem = _context.CartItems.FirstOrDefault(c => c.CartItemsId == id);
+
+            if (cartItem != null)
+            {
+                if (change == "increase")
+                {
+                    if (cartItem.Quantity == 0)
+                    {
+                        cartItem.Quantity = 1; 
+                    }
+                    else
+                    {
+                        cartItem.Quantity++;
+                    }
+                }
+                else if (change == "decrease" && cartItem.Quantity > 0)
+                {
+                    cartItem.Quantity--;
+                }
+
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("ShowCart");
+        }
+
         public IActionResult ShowCart()
         {
             var cart = _context.CartItems
                 .Include(c => c.Cart)
                 .Include(p => p.Product)
                 .ToList();
-            
+
             return View(cart);
+        }
+
+        // GET: CartItems/RemoveFromCart
+        public IActionResult RemoveFromCart(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var cart = _context.CartItems
+                        .Include(c => c.Cart)
+                        .Include(p => p.Product)
+                        .FirstOrDefault(m => m.FkProductId == id);
+
+            if (cart == null)
+            {
+                return NotFound();
+            }
+
+            return View(cart);
+        }
+
+        // POST: CartItems/RemoveFromCartConfirmed
+        [HttpPost, ActionName("RemoveFromCart")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveFromCartConfirmed(int id)
+        {
+            var cart = await _context.CartItems.FindAsync(id);
+
+            if (cart != null)
+            {
+                _context.CartItems.Remove(cart);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(ShowCart));
         }
 
         // GET: Products/Details/5

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TeamBugBusters.Migrations
 {
     /// <inheritdoc />
-    public partial class test : Migration
+    public partial class firstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,21 @@ namespace TeamBugBusters.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    CartId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TotalPrice = table.Column<int>(type: "int", nullable: false),
+                    AmountOfItems = table.Column<int>(type: "int", nullable: false),
+                    TotalDiscount = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.CartId);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,8 +155,8 @@ namespace TeamBugBusters.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -185,8 +200,8 @@ namespace TeamBugBusters.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -201,6 +216,33 @@ namespace TeamBugBusters.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderStatus = table.Column<int>(type: "int", nullable: false),
+                    TotalDiscount = table.Column<int>(type: "int", nullable: false),
+                    TrackingNumber = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderNumber = table.Column<int>(type: "int", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Items = table.Column<int>(type: "int", nullable: false),
+                    TotalPrice = table.Column<double>(type: "float", nullable: false),
+                    ShippingAdress = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    FkCartId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Carts_FkCartId",
+                        column: x => x.FkCartId,
+                        principalTable: "Carts",
+                        principalColumn: "CartId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -210,6 +252,7 @@ namespace TeamBugBusters.Migrations
                     ProductDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     ProductStock = table.Column<int>(type: "int", nullable: false),
                     ProductDiscount = table.Column<int>(type: "int", nullable: true),
+                    ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductPrice = table.Column<int>(type: "int", nullable: false),
                     FkCategoryId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -247,58 +290,35 @@ namespace TeamBugBusters.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Carts",
+                name: "CartItems",
                 columns: table => new
                 {
-                    CartId = table.Column<int>(type: "int", nullable: false)
+                    CartItemsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalPrice = table.Column<int>(type: "int", nullable: false),
-                    AmountOfItems = table.Column<int>(type: "int", nullable: false),
-                    TotalDiscount = table.Column<int>(type: "int", nullable: false),
-                    FkCustomerId = table.Column<int>(type: "int", nullable: false),
-                    FkProductId = table.Column<int>(type: "int", nullable: false)
+                    FkCustomerId = table.Column<int>(type: "int", nullable: true),
+                    FkProductId = table.Column<int>(type: "int", nullable: false),
+                    FkCartId = table.Column<int>(type: "int", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Carts", x => x.CartId);
+                    table.PrimaryKey("PK_CartItems", x => x.CartItemsId);
                     table.ForeignKey(
-                        name: "FK_Carts_Customers_FkCustomerId",
+                        name: "FK_CartItems_Carts_FkCartId",
+                        column: x => x.FkCartId,
+                        principalTable: "Carts",
+                        principalColumn: "CartId");
+                    table.ForeignKey(
+                        name: "FK_CartItems_Customers_FkCustomerId",
                         column: x => x.FkCustomerId,
                         principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "CustomerId");
                     table.ForeignKey(
-                        name: "FK_Carts_Products_FkProductId",
+                        name: "FK_CartItems_Products_FkProductId",
                         column: x => x.FkProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    OrderId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderStatus = table.Column<int>(type: "int", nullable: false),
-                    TotalDiscount = table.Column<int>(type: "int", nullable: false),
-                    TrackingNumber = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderNumber = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Items = table.Column<int>(type: "int", nullable: false),
-                    TotalPrice = table.Column<double>(type: "float", nullable: false),
-                    ShippingAdress = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    FkCartId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
-                    table.ForeignKey(
-                        name: "FK_Orders_Carts_FkCartId",
-                        column: x => x.FkCartId,
-                        principalTable: "Carts",
-                        principalColumn: "CartId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -347,13 +367,18 @@ namespace TeamBugBusters.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Carts_FkCustomerId",
-                table: "Carts",
+                name: "IX_CartItems_FkCartId",
+                table: "CartItems",
+                column: "FkCartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItems_FkCustomerId",
+                table: "CartItems",
                 column: "FkCustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Carts_FkProductId",
-                table: "Carts",
+                name: "IX_CartItems_FkProductId",
+                table: "CartItems",
                 column: "FkProductId");
 
             migrationBuilder.CreateIndex(
@@ -389,6 +414,9 @@ namespace TeamBugBusters.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CartItems");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
@@ -401,13 +429,13 @@ namespace TeamBugBusters.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Carts");
-
-            migrationBuilder.DropTable(
                 name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "Categories");
