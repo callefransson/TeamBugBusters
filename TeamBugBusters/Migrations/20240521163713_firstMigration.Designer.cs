@@ -12,8 +12,8 @@ using TeamBugBusters.Data;
 namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240516083628_Added CartItems To DbContext")]
-    partial class AddedCartItemsToDbContext
+    [Migration("20240521163713_firstMigration")]
+    partial class firstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -170,12 +170,10 @@ namespace TeamBugBusters.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -212,12 +210,10 @@ namespace TeamBugBusters.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -276,18 +272,13 @@ namespace TeamBugBusters.Migrations
                     b.Property<int>("AmountOfItems")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalDiscount")
+                    b.Property<int?>("TotalDiscount")
                         .HasColumnType("int");
 
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
                     b.HasKey("CartId");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("Carts");
                 });
@@ -300,13 +291,19 @@ namespace TeamBugBusters.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemsId"));
 
-                    b.Property<int>("FkCartId")
+                    b.Property<int>("Discount")
                         .HasColumnType("int");
 
-                    b.Property<int>("FkCustomerId")
+                    b.Property<int?>("FkCartId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FkCustomerId")
                         .HasColumnType("int");
 
                     b.Property<int>("FkProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("CartItemsId");
@@ -444,6 +441,10 @@ namespace TeamBugBusters.Migrations
                     b.Property<int?>("ProductDiscount")
                         .HasColumnType("int");
 
+                    b.Property<string>("ProductImage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -538,26 +539,15 @@ namespace TeamBugBusters.Migrations
                         .HasForeignKey("RoleId");
                 });
 
-            modelBuilder.Entity("TeamBugBusters.Models.Cart", b =>
-                {
-                    b.HasOne("TeamBugBusters.Models.Product", null)
-                        .WithMany("Carts")
-                        .HasForeignKey("ProductId");
-                });
-
             modelBuilder.Entity("TeamBugBusters.Models.CartItems", b =>
                 {
                     b.HasOne("TeamBugBusters.Models.Cart", "Cart")
                         .WithMany("CartItems")
-                        .HasForeignKey("FkCartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FkCartId");
 
                     b.HasOne("TeamBugBusters.Models.Customer", "Customer")
                         .WithMany()
-                        .HasForeignKey("FkCustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FkCustomerId");
 
                     b.HasOne("TeamBugBusters.Models.Product", "Product")
                         .WithMany()
@@ -602,11 +592,6 @@ namespace TeamBugBusters.Migrations
             modelBuilder.Entity("TeamBugBusters.Models.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("TeamBugBusters.Models.Product", b =>
-                {
-                    b.Navigation("Carts");
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.Role", b =>

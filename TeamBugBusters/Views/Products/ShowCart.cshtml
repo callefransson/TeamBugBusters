@@ -1,52 +1,57 @@
 ﻿@model IEnumerable<TeamBugBusters.Models.CartItems>
+
 @{
-    ViewData["Title"] = "List";
+    ViewData["Title"] = "Cart";
 }
 <h1 class="display-4">Cart</h1>
 
 <div>
     <a asp-action="" class="btn btn-outline-success">Continue to checkout</a>
 </div>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Product.ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Product.ProductPrice)
-            </th>
+            <th>Total price</th>
+            <th>Amount of items in Cart</th>
+            <th>Total discount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.Sum(item => item.Product.ProductPrice * item.Quantity)</td>
+            <td>@Model.Sum(item => item.Quantity)</td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Product Price</th>
+            <th>Quantity</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+                <td>@item.Product.ProductName</td>
+                <td>@item.Product.ProductPrice</td>
+                <td>@item.Quantity</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.ProductName)
+                    <form asp-action="UpdateQuantity" asp-route-id="@item.CartItemsId" method="post">
+                        <button type="submit" name="change" value="increase" class="btn btn-primary">+</button>
+                        <button type="submit" name="change" value="decrease" class="btn btn-primary">-</button>
+                    </form>
+                    <form asp-action="RemoveFromCart" asp-route-id="@item.FkProductId" method="post">
+                        <button type="submit" class="btn btn-danger">Remove</button>
+                    </form>
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Product.ProductPrice)
-                </td>
-                    
             </tr>
         }
     </tbody>
 </table>
 
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-    
-    th {
-        background-color: #f2f2f2;
-    }
-</style>
+
