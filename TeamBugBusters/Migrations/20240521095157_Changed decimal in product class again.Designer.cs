@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamBugBusters.Data;
 
@@ -11,9 +12,11 @@ using TeamBugBusters.Data;
 namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521095157_Changed decimal in product class again")]
+    partial class Changeddecimalinproductclassagain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -425,7 +428,7 @@ namespace TeamBugBusters.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal?>("DiscountPrice")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("DiscountStartDate")
                         .HasColumnType("datetime2");
@@ -450,7 +453,7 @@ namespace TeamBugBusters.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("ProductPrice")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ProductStock")
                         .HasColumnType("int");

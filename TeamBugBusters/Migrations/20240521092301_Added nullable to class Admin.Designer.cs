@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamBugBusters.Data;
 
@@ -11,9 +12,11 @@ using TeamBugBusters.Data;
 namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521092301_Added nullable to class Admin")]
+    partial class AddednullabletoclassAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -421,15 +424,6 @@ namespace TeamBugBusters.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
-                    b.Property<DateTime?>("DiscountEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("DiscountPrice")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<DateTime?>("DiscountStartDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("FkCategoryId")
                         .HasColumnType("int");
 
@@ -449,8 +443,8 @@ namespace TeamBugBusters.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<decimal>("ProductPrice")
-                        .HasColumnType("decimal(18, 2)");
+                    b.Property<int>("ProductPrice")
+                        .HasColumnType("int");
 
                     b.Property<int?>("ProductStock")
                         .HasColumnType("int");

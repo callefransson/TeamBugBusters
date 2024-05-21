@@ -1,4 +1,4 @@
-﻿@model TeamBugBusters.Models.Admin
+﻿@model TeamBugBusters.Models.Product
 
 @{
     ViewData["Title"] = "Details";
@@ -7,36 +7,42 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Admin</h4>
+    <h4>Product</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AdminFullName)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProductName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AdminFullName)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ProductName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AdminEmail)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProductDescription)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AdminEmail)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ProductDescription)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AdminPersonalNumber)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProductStock)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AdminPersonalNumber)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ProductStock)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProductDiscount)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Password)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ProductDiscount)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProductPrice)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ProductPrice)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.AdminId">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
