@@ -1,0 +1,24 @@
+﻿@model TeamBugBusters.Models.CartItems
+
+@{
+    ViewData["Title"] = "Remove From Cart";
+}
+
+<h1>Remove Item from Cart</h1>
+
+<h3>Are you sure you want to remove this item from cart?</h3>
+
+<div>
+    <h4>Product: @Model.Product.ProductName</h4>
+    <h4>Price: @Model.Product.ProductPrice</h4>
+
+    <form asp-action="RemoveFromCartConfirmed" method="post">
+        <input type="hidden" asp-for="CartItemsId"/>
+        <button type="submit" class="btn btn-danger">Accept</button>
+        <a asp-action="ShowCart" class="btn btn-secondary">Cancel</a>
+    </form>
+
+</div>
+
+
+

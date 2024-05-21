@@ -9,7 +9,7 @@ namespace TeamBugBusters.Models
         public int CartId { get; set; }
         public int TotalPrice { get; set; }
         public int AmountOfItems { get; set; }
-        public int TotalDiscount { get; set; }
+        public int? TotalDiscount { get; set; }
         //[ForeignKey("Customer")]
         //public int FkCustomerId { get; set; }
         //public Customer? Customer { get; set; }

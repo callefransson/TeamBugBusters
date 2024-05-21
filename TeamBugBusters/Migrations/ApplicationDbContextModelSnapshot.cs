@@ -269,7 +269,7 @@ namespace TeamBugBusters.Migrations
                     b.Property<int>("AmountOfItems")
                         .HasColumnType("int");
 
-                    b.Property<int>("TotalDiscount")
+                    b.Property<int?>("TotalDiscount")
                         .HasColumnType("int");
 
                     b.Property<int>("TotalPrice")
@@ -288,6 +288,9 @@ namespace TeamBugBusters.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemsId"));
 
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
+
                     b.Property<int?>("FkCartId")
                         .HasColumnType("int");
 
@@ -295,6 +298,9 @@ namespace TeamBugBusters.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("FkProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("CartItemsId");

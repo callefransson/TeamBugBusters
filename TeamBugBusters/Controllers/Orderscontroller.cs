@@ -2,7 +2,7 @@
 
 namespace TeamBugBusters.Controllers
 {
-    public class Order : Controller
+    public class Orderscontroller : Controller
     {
         public IActionResult Index()
         {
