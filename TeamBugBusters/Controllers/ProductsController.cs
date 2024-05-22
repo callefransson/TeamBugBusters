@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Build.Framework;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TeamBugBusters.Data;
 using TeamBugBusters.Models;
 
@@ -105,7 +106,7 @@ namespace TeamBugBusters.Controllers
             return RedirectToAction("ShowCart");
         }
 
-        public IActionResult ShowCart(int? id)
+        public IActionResult ShowCart()
         {
             var cart = _context.CartItems
                     .Include(c => c.Cart)
