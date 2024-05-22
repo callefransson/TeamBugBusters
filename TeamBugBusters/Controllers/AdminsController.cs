@@ -56,7 +56,6 @@ namespace TeamBugBusters.Controllers
 
         //GET: Products/AddDiscountPrice/5
         [HttpGet]
-        [HttpGet]
         public async Task<IActionResult> AddDiscountPrice(int? productId)
         {
             if (productId == null)
@@ -71,20 +70,37 @@ namespace TeamBugBusters.Controllers
                 return NotFound();
             }
 
-            var viewModel = new ProductViewModel
+            var viewModel = new ProductDiscountViewModel
             {
-                ProductId = product.ProductId,
                 ProductName = product.ProductName,
                 CurrentPrice = product.ProductPrice
             };
 
             return View(viewModel);
         }
-        //[HttpPost]
-        //public async Task<IActionResult> AddDiscountPrice()
-        //{
-        //    return View();
-        //}
+        [HttpPost]
+        public async Task<IActionResult> AddDiscountPrice(ProductDiscountViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == model.ProductId);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                product.DiscountPrice = product.ProductPrice - model.Discount;
+                product.DiscountStartDate = model.StartDate;
+                product.DiscountEndDate = model.EndDate;
+
+                _context.Products.Update(product);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+
+            return View(model);
+        }
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)

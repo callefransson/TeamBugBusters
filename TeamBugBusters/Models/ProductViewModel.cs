@@ -1,6 +1,6 @@
 ﻿namespace TeamBugBusters.Models
 {
-    public class ProductViewModel
+    public class ProductDiscountViewModel
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }

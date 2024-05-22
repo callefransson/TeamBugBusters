@@ -26,6 +26,12 @@
                 Discount
             </th>
             <th>
+                Discount StartDate
+            </th>
+            <th>
+                Discount EndDate
+            </th>
+            <th>
                Price
             </th>
             <th>
@@ -48,7 +54,13 @@
                     @Html.DisplayFor(modelItem => item.ProductStock)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProductDiscount)
+                    @Html.DisplayFor(modelItem => item.DiscountPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DiscountStartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DiscountEndDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ProductPrice)
