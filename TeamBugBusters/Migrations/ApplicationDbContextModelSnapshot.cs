@@ -255,7 +255,7 @@ namespace TeamBugBusters.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Admins");
+                    b.ToTable("Admins", (string)null);
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.Cart", b =>
@@ -277,7 +277,7 @@ namespace TeamBugBusters.Migrations
 
                     b.HasKey("CartId");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.CartItems", b =>
@@ -311,7 +311,7 @@ namespace TeamBugBusters.Migrations
 
                     b.HasIndex("FkProductId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.Category", b =>
@@ -329,7 +329,7 @@ namespace TeamBugBusters.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.Customer", b =>
@@ -372,7 +372,7 @@ namespace TeamBugBusters.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.Order", b =>
@@ -416,7 +416,7 @@ namespace TeamBugBusters.Migrations
 
                     b.HasIndex("FkCartId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.Product", b =>
@@ -465,7 +465,7 @@ namespace TeamBugBusters.Migrations
 
                     b.HasIndex("FkCategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.Role", b =>
@@ -483,7 +483,7 @@ namespace TeamBugBusters.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

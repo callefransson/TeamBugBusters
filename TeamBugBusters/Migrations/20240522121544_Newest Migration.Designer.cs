@@ -12,8 +12,8 @@ using TeamBugBusters.Data;
 namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240521163713_firstMigration")]
-    partial class firstMigration
+    [Migration("20240522121544_Newest Migration")]
+    partial class NewestMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -430,6 +430,15 @@ namespace TeamBugBusters.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
+                    b.Property<DateTime?>("DiscountEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("DiscountPrice")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<DateTime?>("DiscountStartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("FkCategoryId")
                         .HasColumnType("int");
 
@@ -442,7 +451,6 @@ namespace TeamBugBusters.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ProductImage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductName")
@@ -450,10 +458,10 @@ namespace TeamBugBusters.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("ProductPrice")
-                        .HasColumnType("int");
+                    b.Property<decimal>("ProductPrice")
+                        .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int>("ProductStock")
+                    b.Property<int?>("ProductStock")
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
