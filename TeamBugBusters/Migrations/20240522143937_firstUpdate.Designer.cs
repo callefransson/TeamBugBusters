@@ -12,8 +12,8 @@ using TeamBugBusters.Data;
 namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240522121544_Newest Migration")]
-    partial class NewestMigration
+    [Migration("20240522143937_firstUpdate")]
+    partial class firstUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -291,7 +291,7 @@ namespace TeamBugBusters.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemsId"));
 
-                    b.Property<int>("Discount")
+                    b.Property<int?>("Discount")
                         .HasColumnType("int");
 
                     b.Property<int?>("FkCartId")

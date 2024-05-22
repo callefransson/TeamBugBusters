@@ -9,6 +9,12 @@
     <a asp-action="" class="btn btn-outline-success">Continue to checkout</a>
 </div>
 
+@{
+    var totalSum = Model.Sum(item => item.Product.IsDiscountActive() ? item.Product.DiscountPrice * item.Quantity : item.Product.ProductPrice * item.Quantity);
+    var totalItems = Model.Sum(item => item.Quantity);
+    var totalDiscount = Model.Where(item => item.Product.IsDiscountActive()).Sum(item => (item.Product.ProductPrice - item.Product.DiscountPrice) * item.Quantity);
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -19,8 +25,9 @@
     </thead>
     <tbody>
         <tr>
-            <td>@Model.Sum(item => item.Product.ProductPrice * item.Quantity)</td>
-            <td>@Model.Sum(item => item.Quantity)</td>
+            <td>@totalSum</td>
+            <td>@totalItems</td>
+            <td>@totalDiscount</td>
         </tr>
     </tbody>
 </table>
@@ -28,9 +35,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Product Name</th>
-            <th>Product Price</th>
-            <th>Product discount</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Discount Price</th>
             <th>Quantity</th>
         </tr>
     </thead>
@@ -40,7 +47,7 @@
             <tr>
                 <td>@item.Product.ProductName</td>
                 <td>@item.Product.ProductPrice</td>
-                <td>@Model.Sum(item => item.Product.ProductPrice * item.Quantity * item.Discount / 100) </td>
+                <td>@item.Product.DiscountPrice</td>
                 <td>@item.Quantity</td>
                 <td>
                     <form asp-action="UpdateQuantity" asp-route-id="@item.CartItemsId" method="post">
