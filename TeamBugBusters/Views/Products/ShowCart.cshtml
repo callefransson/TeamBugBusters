@@ -30,6 +30,7 @@
         <tr>
             <th>Product Name</th>
             <th>Product Price</th>
+            <th>Product discount</th>
             <th>Quantity</th>
         </tr>
     </thead>
@@ -39,6 +40,7 @@
             <tr>
                 <td>@item.Product.ProductName</td>
                 <td>@item.Product.ProductPrice</td>
+                <td>@Model.Sum(item => item.Product.ProductPrice * item.Quantity * item.Discount / 100) </td>
                 <td>@item.Quantity</td>
                 <td>
                     <form asp-action="UpdateQuantity" asp-route-id="@item.CartItemsId" method="post">

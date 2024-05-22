@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Build.Framework;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using TeamBugBusters.Data;
 using TeamBugBusters.Models;
@@ -21,7 +22,7 @@ namespace TeamBugBusters.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? productId)
         {
             var categories = await _context.Products
                 .Include(x => x.Category)
@@ -51,7 +52,8 @@ namespace TeamBugBusters.Controllers
                 var newCartItem = new CartItems
                 {
                     FkProductId = productId.Value,
-                    FkCartId = GetOrCreateCartId()
+                    FkCartId = GetOrCreateCartId(),
+                    Quantity = 1
                 };
 
                 _context.CartItems.Add(newCartItem);
@@ -103,12 +105,18 @@ namespace TeamBugBusters.Controllers
             return RedirectToAction("ShowCart");
         }
 
-        public IActionResult ShowCart()
+        public IActionResult ShowCart(int? id)
         {
             var cart = _context.CartItems
-                .Include(c => c.Cart)
-                .Include(p => p.Product)
-                .ToList();
+                    .Include(c => c.Cart)
+                    .Include(p => p.Product)
+                    .ToList();
+
+            if (cart == null || !cart.Any())
+            {
+                ViewBag.Message = "No items in Cart";
+                return View();
+            }
 
             return View(cart);
         }
