@@ -78,6 +78,23 @@ namespace TeamBugBusters.Controllers
         }
 
         [HttpPost]
+        
+        public IActionResult Index()
+        {
+            var products = _context.Products.Include(p => p.Category).ToList();
+            return View(products);
+        }
+        
+        public IActionResult FilterByCategory(int categoryId)
+        {
+            var products = _context.Products
+            .Include(p => p.Category)
+            .Where(p => p.Category.CategoryId == categoryId)  
+            .ToList();
+
+            return View("Index", products);
+        }
+        
         public IActionResult UpdateQuantity(int id, string change)
         {
             var cartItem = _context.CartItems.FirstOrDefault(c => c.CartItemsId == id);
