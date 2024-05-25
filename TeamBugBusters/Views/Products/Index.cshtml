@@ -2,53 +2,62 @@
 
 @{
     ViewData["Title"] = "Products";
+    //sortering
+    var distinctCategories = Model.Select(p => p.Category).GroupBy(c => c.CategoryId).Select(g => g.First()).OrderBy(c => c.CategoryName).ToList();
 }
 
 <h1 class="display-4">Our products</h1>
-    <div class="row mt-5">
-        <div class="col-sm-2">
-            <h1>Categories</h1>
-        </div>
-        <div class="col-sm-10">
+<div class="row mt-5">
+    <div class="col-sm-2">
+        <h1>Categories</h1>
+        @foreach(var category in distinctCategories)
+        {
+        <p class="card-text">
+            <a asp-action="FilterByCategory" asp-route-categoryId="@category.CategoryId">
+                @category.CategoryName
+            </a>
+        </p>
+        }
+    </div>
+    <div class="col-sm-10">
         <div class="d-flex gap-3 flex-row flex-wrap justify-content-start">
             @foreach (var item in Model)
             {
                 <div class="card" style="width: 22rem;">
-                    <img class="card-img-top" src="@Html.DisplayFor(modelItem=>item.ProductImage)" alt="Card image cap">
+                    <img class="card-img-top" src="@item.ProductImage" alt="Card image cap">
                     <div class="card-body">
-                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.ProductName)</h5>
-                        <p class="card-text">@Html.DisplayFor(modelItem => item.ProductDescription)</p>
-            
-                            
-                            @if (item.IsDiscountActive())
-                            {
+                        <h5 class="card-title">@item.ProductName</h5>
+                        <p class="card-text">@item.ProductDescription</p>
+
+                        @if (item.IsDiscountActive())
+                        {
                             <span>Price: </span>
-                            <span style="text-decoration:line-through;">@Html.DisplayFor(modelItem => item.ProductPrice):-</span>
-                                <span>@item.DiscountPrice:-</span>
-                                <p class="card-text">This discount ends: @Html.DisplayFor(modelItem=>item.DiscountEndDate)</p>
-                            }
-                            else
-                            {
-                            <p class="card-text">Price: @Html.DisplayFor(modelItem => item.ProductPrice):-</p>
-                            }
-                        
+                            <span style="text-decoration:line-through;">@item.ProductPrice</span>
+                            <span>@item.DiscountPrice</span>
+                            <p class="card-text">This discount ends: @item.DiscountEndDate</p>
+                        }
+                        else
+                        {
+                            <p class="card-text">Price: @item.ProductPrice</p>
+                        }
+
                         <p class="card-text">
                             @switch (item.ProductStock)
                             {
                                 case int n when (n > 10):
-                                    <span style="color:green">Amount in stock: @Html.DisplayFor(modelItem => item.ProductStock)</span>
+                                    <span style="color:green">Amount in stock: @item.ProductStock</span>
                                     break;
                                 case int n when (n > 5 && n <= 10):
-                                    <span style="color:darkorange">Amount in stock: @Html.DisplayFor(modelItem => item.ProductStock)</span>
+                                    <span style="color:darkorange">Amount in stock: @item.ProductStock</span>
                                     break;
                                 case int n when (n > 0 && n <= 5):
-                                    <span style="color:red">Amount in stock: @Html.DisplayFor(modelItem => item.ProductStock)</span>
+                                    <span style="color:red">Amount in stock: @item.ProductStock</span>
                                     break;
                                 case 0:
                                     <span>This product is sold out</span>
                                     break;
                                 default:
-                                    <span>Amount in stock: @Html.DisplayFor(modelItem => item.ProductStock)</span>
+                                    <span>Amount in stock: @item.ProductStock</span>
                                     break;
                             }
                         </p>
@@ -57,8 +66,7 @@
                 </div>
             }
         </div>
-        </div>
     </div>
-   
+</div>
 
 <link rel="stylesheet" href="/css/products.css" />

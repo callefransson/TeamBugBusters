@@ -5,15 +5,19 @@
 }
 <h1 class="display-4">Cart</h1>
 
-<div>
-    <a asp-action="" class="btn btn-outline-success">Continue to checkout</a>
-</div>
 
 @{
     var totalSum = Model.Sum(item => item.Product.IsDiscountActive() ? item.Product.DiscountPrice * item.Quantity : item.Product.ProductPrice * item.Quantity);
     var totalItems = Model.Sum(item => item.Quantity);
     var totalDiscount = Model.Where(item => item.Product.IsDiscountActive()).Sum(item => (item.Product.ProductPrice - item.Product.DiscountPrice) * item.Quantity);
 }
+@if (Model.Any())
+{
+    
+
+<div>
+    <a asp-action="" class="btn btn-outline-success">Continue to checkout</a>
+</div>
 
 <table class="table">
     <thead>
@@ -61,6 +65,13 @@
             </tr>
         }
     </tbody>
-</table>
+    </table>
+}
+else
+{
+    <div class="container">
+        <h2 class="display-5">Your cart is empty</h2>
+    </div>
+}
 
 

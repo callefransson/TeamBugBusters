@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TeamBugBusters.Models
@@ -7,9 +8,8 @@ namespace TeamBugBusters.Models
     {
         [Key]
         public int CartItemsId { get; set; }
-        [ForeignKey("Customer")]
-        public int? FkCustomerId { get; set; }
-        public Customer? Customer { get; set; }
+        public string? UserId { get; set; }
+        public IdentityUser? User { get; set; }
         [ForeignKey("Product")]
         public int FkProductId { get; set; }
         public Product? Product { get; set; }
