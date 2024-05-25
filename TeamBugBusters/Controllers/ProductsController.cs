@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Build.Framework;
@@ -16,10 +17,12 @@ namespace TeamBugBusters.Controllers
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Products
@@ -37,11 +40,11 @@ namespace TeamBugBusters.Controllers
             {
                 return NotFound();
             }
-
+            var userId = _userManager.GetUserId(User);
             var cartItem = await _context.CartItems
                 .Include(ci => ci.Cart)
                 .Include(p => p.Product)
-                .FirstOrDefaultAsync(p => p.FkProductId == productId);
+                .FirstOrDefaultAsync(p => p.FkProductId == productId && p.UserId == userId);
 
             if (cartItem != null)
             {
@@ -54,6 +57,7 @@ namespace TeamBugBusters.Controllers
                 {
                     FkProductId = productId.Value,
                     FkCartId = GetOrCreateCartId(),
+                    UserId = userId,
                     Quantity = 1
                 };
 
@@ -125,16 +129,12 @@ namespace TeamBugBusters.Controllers
 
         public IActionResult ShowCart()
         {
+            var userId = _userManager.GetUserId(User);
             var cart = _context.CartItems
                     .Include(c => c.Cart)
                     .Include(p => p.Product)
+                    .Where(c=>c.UserId == userId)
                     .ToList();
-
-            if (cart == null || !cart.Any())
-            {
-                ViewBag.Message = "No items in Cart";
-                return View();
-            }
 
             return View(cart);
         }
@@ -165,7 +165,7 @@ namespace TeamBugBusters.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveFromCartConfirmed(int id)
         {
-            var cart = await _context.CartItems.FindAsync(id);
+            var cart = await _context.CartItems.FirstOrDefaultAsync(m => m.FkProductId == id);
 
             if (cart != null)
             {
