@@ -24,6 +24,10 @@ namespace TeamBugBusters.Models
         public double TotalPrice { get; set; }
         [StringLength(200, ErrorMessage = "Shipping adress can't be longer than 200 characters ")]
         public string ShippingAdress { get; set; }
+        [StringLength(200, ErrorMessage = "Shipping adress can't be longer than 200 characters ")]
+        public string City { get; set; }
+        public int ZipCode { get; set; }
+
         [ForeignKey("Cart")]
         public int FkCartId { get; set; }
         public Cart? Cart { get; set; }

@@ -16,9 +16,19 @@
 <form asp-action="ActionName" asp-controller="ControllerName" method="post">
     <p>Where do you want your order to be shipped?</p>
     <div class="form-group">
-        <label asp-for="ShippingAdress" class="control-label"></label>
+        <label asp-for="ShippingAdress" class="control-label">Shipping Adress</label>
         <input asp-for="ShippingAdress" class="form-control" />
         <span asp-validation-for="ShippingAdress" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="City" class="control-label">City</label>
+        <input asp-for="City" class="form-control" />
+        <span asp-validation-for="City" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ZipCode" class="control-label">Zip Code</label>
+        <input asp-for="ZipCode" class="form-control" />
+        <span asp-validation-for="ZipCode" class="text-danger"></span>
     </div>
     <div>
         <a asp-action="" class="btn btn-success">Place order</a>
@@ -31,16 +41,26 @@
     <thead>
         <tr>
             <th>Total price</th>
+            <th>Amount of items in Cart</th>
             <th>Total discount</th>
-            <th>Product name</th>
-            <th>Quantity</th>
-            <th>Product price</th>
-            <th>Product discount</th>
-            <th>Amount of items</th>
         </tr>
     </thead>
     <tbody>
+        
+    </tbody>
+</table>
 
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Discount Price</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        
     </tbody>
 </table>
 
