@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamBugBusters.Data;
 
@@ -11,9 +12,11 @@ using TeamBugBusters.Data;
 namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240524113002_testMigration")]
+    partial class testMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -294,22 +297,22 @@ namespace TeamBugBusters.Migrations
                     b.Property<int?>("FkCartId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("FkCustomerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("FkProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("CartItemsId");
 
                     b.HasIndex("FkCartId");
 
-                    b.HasIndex("FkProductId");
+                    b.HasIndex("FkCustomerId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FkProductId");
 
                     b.ToTable("CartItems");
                 });
@@ -557,21 +560,21 @@ namespace TeamBugBusters.Migrations
                         .WithMany("CartItems")
                         .HasForeignKey("FkCartId");
 
+                    b.HasOne("TeamBugBusters.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("FkCustomerId");
+
                     b.HasOne("TeamBugBusters.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("FkProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Cart");
 
-                    b.Navigation("Product");
+                    b.Navigation("Customer");
 
-                    b.Navigation("User");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.Order", b =>

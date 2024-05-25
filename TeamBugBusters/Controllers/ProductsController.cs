@@ -175,6 +175,51 @@ namespace TeamBugBusters.Controllers
             return RedirectToAction(nameof(ShowCart));
         }
 
+        public async Task <IActionResult> ContinueToCheckout(int? checkoutId) 
+        {
+            /*if (checkoutId == null)
+            {
+                return NotFound();
+            }
+
+            var checkoutItem = await _context.Orders
+                .Include(ci => ci.Cart)
+                .Include(ci => ci.CartItems)
+                .Include(p => p.Product)
+                .FirstOrDefaultAsync(p => p.OrderId == checkoutId);
+
+            if (checkoutItem != null)
+            {
+                _context.Update(checkoutItem);
+            }
+            else
+            {
+                var newCheckoutItem = new Order
+                {
+                    FkCartId = checkoutId.Value,
+                    OrderId = GetOrCreateCartId(),
+                };
+
+                _context.CartItems.Add(newCheckoutItem);
+            }
+
+            await _context.SaveChangesAsync();*/
+
+            return RedirectToAction("Index", "Checkouts");
+        }
+
+        private int GetOrCreateCheckoutId()
+        {
+            var order = _context.Orders.FirstOrDefault();
+            if (order == null)
+            {
+                order = new Order();
+                _context.Orders.Add(order);
+                _context.SaveChanges();
+            }
+            return order.OrderId;
+        }
+
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id);
