@@ -40,11 +40,14 @@ namespace TeamBugBusters.Controllers
             {
                 return NotFound();
             }
+
             var userId = _userManager.GetUserId(User);
             var cartItem = await _context.CartItems
                 .Include(ci => ci.Cart)
                 .Include(p => p.Product)
                 .FirstOrDefaultAsync(p => p.FkProductId == productId && p.UserId == userId);
+
+            bool itemAdded = false;
 
             if (cartItem != null)
             {
@@ -62,11 +65,14 @@ namespace TeamBugBusters.Controllers
                 };
 
                 _context.CartItems.Add(newCartItem);
+                itemAdded = true;
             }
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("ShowCart");
+            TempData["itemAdded"] = itemAdded;
+
+            return RedirectToAction("Index");
         }
 
         private int GetOrCreateCartId()
@@ -121,6 +127,12 @@ namespace TeamBugBusters.Controllers
                     cartItem.Quantity--;
                 }
 
+                if (cartItem.Quantity == 0)
+                {
+                    _context.CartItems.Remove(cartItem);
+                    TempData["isRemoved"] = true; 
+                }
+
                 _context.SaveChanges();
             }
 
@@ -152,10 +164,14 @@ namespace TeamBugBusters.Controllers
                         .Include(p => p.Product)
                         .FirstOrDefault(m => m.FkProductId == id);
 
+            bool isRemoved = false;
+
             if (cart == null)
             {
                 return NotFound();
             }
+
+            TempData["isRemoved"] = isRemoved;
 
             return View(cart);
         }
@@ -172,53 +188,66 @@ namespace TeamBugBusters.Controllers
                 _context.CartItems.Remove(cart);
                 await _context.SaveChangesAsync();
             }
+
+            TempData["isRemoved"] = true;
             return RedirectToAction(nameof(ShowCart));
         }
 
         public async Task <IActionResult> ContinueToCheckout(int? checkoutId) 
         {
-            /*if (checkoutId == null)
+            if (checkoutId == null)
             {
                 return NotFound();
             }
 
-            var checkoutItem = await _context.Orders
+            var userId = _userManager.GetUserId(User);
+            var checkoutItems = await _context.CartItems
                 .Include(ci => ci.Cart)
-                .Include(ci => ci.CartItems)
                 .Include(p => p.Product)
-                .FirstOrDefaultAsync(p => p.OrderId == checkoutId);
+                .FirstOrDefaultAsync(p => p.FkProductId == checkoutId && p.UserId == userId);
 
-            if (checkoutItem != null)
+            if (checkoutItems != null)
             {
-                _context.Update(checkoutItem);
+                _context.Update(checkoutItems);
             }
             else
             {
-                var newCheckoutItem = new Order
+                var newCheckoutItem = new CartItems
                 {
-                    FkCartId = checkoutId.Value,
-                    OrderId = GetOrCreateCartId(),
+                    FkProductId = checkoutId.Value,
+                    FkCartId = GetOrCreateCartId(),
+                    UserId = userId,
                 };
 
                 _context.CartItems.Add(newCheckoutItem);
             }
 
-            await _context.SaveChangesAsync();*/
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Checkouts");
         }
 
         private int GetOrCreateCheckoutId()
         {
-            var order = _context.Orders.FirstOrDefault();
-            if (order == null)
+            var checkout = _context.CartItems.FirstOrDefault();
+            if (checkout == null)
             {
-                order = new Order();
-                _context.Orders.Add(order);
+                checkout = new CartItems();
+                _context.CartItems.Add(checkout);
                 _context.SaveChanges();
             }
-            return order.OrderId;
+            return checkout.CartItemsId;
         }
+
+        //public async Task <PlaceOrder> (int? orderId)
+        //{
+        //    if (orderId == null)
+        //    {
+        //        return NotFound();
+        //    }
+            
+        //    return View();
+        //}
 
         private bool ProductExists(int id)
         {

@@ -1,10 +1,16 @@
-﻿@model Order
+﻿@model IEnumerable<TeamBugBusters.Models.CartItems>
 
 @{
-    ViewData["Title"] = "Order";
+    ViewData["Title"] = "Checkout";
 }
 
 <h1>Checkout!</h1>
+
+@{
+    var totalSum = Model.Sum(item => item.Product.IsDiscountActive() ? item.Product.DiscountPrice * item.Quantity : item.Product.ProductPrice * item.Quantity);
+    var totalItems = Model.Sum(item => item.Quantity);
+    var totalDiscount = Model.Where(item => item.Product.IsDiscountActive()).Sum(item => (item.Product.ProductPrice - item.Product.DiscountPrice) * item.Quantity);
+}
 
 
 <div>
@@ -13,7 +19,7 @@
 
 <br />
 
-<form asp-action="ActionName" asp-controller="ControllerName" method="post">
+@* <form asp-action="ActionName" asp-controller="ControllerName" method="post">
     <p>Where do you want your order to be shipped?</p>
     <div class="form-group">
         <label asp-for="ShippingAdress" class="control-label">Shipping Adress</label>
@@ -31,38 +37,71 @@
         <span asp-validation-for="ZipCode" class="text-danger"></span>
     </div>
     <div>
-        <a asp-action="" class="btn btn-success">Place order</a>
+        <a asp-action="Index" asp-controller="Orders" class="btn btn-success">Place order</a>
     </div>
-</form>
+</form> *@
 
 <br />
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Total price</th>
-            <th>Amount of items in Cart</th>
-            <th>Total discount</th>
-        </tr>
-    </thead>
-    <tbody>
-        
-    </tbody>
-</table>
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Total price</th>
+                <th>Amount of items in Cart</th>
+                <th>Total discount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@totalSum</td>
+                <td>@totalItems</td>
+                <td>@totalDiscount</td>
+            </tr>
+        </tbody>
+    </table>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Discount Price</th>
-            <th>Quantity</th>
-        </tr>
-    </thead>
-    <tbody>
-        
-    </tbody>
-</table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Discount Price</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Product.ProductName</td>
+                    <td>@item.Product.ProductPrice</td>
+                    <td>@item.Product.DiscountPrice</td>
+                    <td>@item.Quantity</td>
+                    <td>
+                        <form asp-action="UpdateQuantity" asp-route-id="@item.CartItemsId" method="post">
+                            <button type="submit" name="change" value="increase" class="btn btn-primary">+</button>
+                            <button type="submit" name="change" value="decrease" class="btn btn-primary">-</button>
+                        </form>
+                        <form asp-action="RemoveFromCart" asp-route-id="@item.FkProductId" method="post">
+                            <button type="submit" class="btn btn-outline-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+else
+{
+    <div class="container">
+        <h2 class="display-5">Your cart is empty</h2>
+    </div>
+}
+
+
 
 
 

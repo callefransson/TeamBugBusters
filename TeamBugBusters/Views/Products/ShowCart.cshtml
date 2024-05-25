@@ -2,21 +2,32 @@
 
 @{
     ViewData["Title"] = "Cart";
+    bool isRemoved = TempData["isRemoved"] as bool? ?? false;
 }
 <h1 class="display-4">Cart</h1>
 
+@if (isRemoved)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Product has been removed from Cart!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 
 @{
     var totalSum = Model.Sum(item => item.Product.IsDiscountActive() ? item.Product.DiscountPrice * item.Quantity : item.Product.ProductPrice * item.Quantity);
     var totalItems = Model.Sum(item => item.Quantity);
     var totalDiscount = Model.Where(item => item.Product.IsDiscountActive()).Sum(item => (item.Product.ProductPrice - item.Product.DiscountPrice) * item.Quantity);
 }
+
 @if (Model.Any())
 {
     
 
 <div>
-    <a asp-action="" class="btn btn-outline-success">Continue to checkout</a>
+    <a asp-action="Index" asp-controller="Checkouts" class="btn btn-outline-success">Continue to checkout</a>
 </div>
 
 <table class="table">
@@ -73,5 +84,10 @@ else
         <h2 class="display-5">Your cart is empty</h2>
     </div>
 }
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
