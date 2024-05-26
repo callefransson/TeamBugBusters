@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TeamBugBusters.Models.CartItems>
+﻿@model IEnumerable<TeamBugBusters.Models.OrderViewModel>
 
 @{
     ViewData["Title"] = "Checkout";
@@ -6,11 +6,7 @@
 
 <h1>Checkout!</h1>
 
-@{
-    var totalSum = Model.Sum(item => item.Product.IsDiscountActive() ? item.Product.DiscountPrice * item.Quantity : item.Product.ProductPrice * item.Quantity);
-    var totalItems = Model.Sum(item => item.Quantity);
-    var totalDiscount = Model.Where(item => item.Product.IsDiscountActive()).Sum(item => (item.Product.ProductPrice - item.Product.DiscountPrice) * item.Quantity);
-}
+
 
 
 <div>
@@ -19,7 +15,7 @@
 
 <br />
 
-@* <form asp-action="ActionName" asp-controller="ControllerName" method="post">
+@* <form asp-action="PlaceOrder" asp-controller="Products" method="post">
     <p>Where do you want your order to be shipped?</p>
     <div class="form-group">
         <label asp-for="ShippingAdress" class="control-label">Shipping Adress</label>
@@ -37,14 +33,12 @@
         <span asp-validation-for="ZipCode" class="text-danger"></span>
     </div>
     <div>
-        <a asp-action="Index" asp-controller="Orders" class="btn btn-success">Place order</a>
+        <button type="submit" asp-action="Index" class="btn btn-success">Place order</button>
     </div>
-</form> *@
+</form>  *@
 
 <br />
 
-@if (Model.Any())
-{
     <table class="table">
         <thead>
             <tr>
@@ -54,11 +48,14 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>@totalSum</td>
-                <td>@totalItems</td>
-                <td>@totalDiscount</td>
-            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.TotalPrice)</td>
+                    <td>@Html.DisplayFor(modelItem => item.AmountOfItems)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TotalDiscount)</td>
+                </tr>
+            }
         </tbody>
     </table>
 
@@ -75,31 +72,15 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.Product.ProductName</td>
-                    <td>@item.Product.ProductPrice</td>
-                    <td>@item.Product.DiscountPrice</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.ProductPrice</td>
+                    <td>@item.DiscountPrice</td>
                     <td>@item.Quantity</td>
-                    <td>
-                        <form asp-action="UpdateQuantity" asp-route-id="@item.CartItemsId" method="post">
-                            <button type="submit" name="change" value="increase" class="btn btn-primary">+</button>
-                            <button type="submit" name="change" value="decrease" class="btn btn-primary">-</button>
-                        </form>
-                        <form asp-action="RemoveFromCart" asp-route-id="@item.FkProductId" method="post">
-                            <button type="submit" class="btn btn-outline-danger">Remove</button>
-                        </form>
-                    </td>
                 </tr>
             }
         </tbody>
     </table>
-}
 
-else
-{
-    <div class="container">
-        <h2 class="display-5">Your cart is empty</h2>
-    </div>
-}
 
 
 

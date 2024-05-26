@@ -193,18 +193,40 @@ namespace TeamBugBusters.Controllers
             return RedirectToAction(nameof(ShowCart));
         }
 
-        public async Task <IActionResult> ContinueToCheckout(int? checkoutId) 
+        public IActionResult ContinueToCheckout(int? checkoutId) 
         {
-            if (checkoutId == null)
-            {
-                return NotFound();
-            }
+            //if (checkoutId == null)
+            //{
+            //    return NotFound();
+            //}
 
             var userId = _userManager.GetUserId(User);
-            var checkoutItems = await _context.CartItems
-                .Include(ci => ci.Cart)
-                .Include(p => p.Product)
-                .FirstOrDefaultAsync(p => p.FkProductId == checkoutId && p.UserId == userId);
+            var checkoutItems = (
+                from o in _context.Orders
+                join c in _context.Carts on o.OrderId equals c.CartId
+                join ci in _context.CartItems on o.OrderId equals ci.CartItemsId
+                join p in _context.Products on ci.FkProductId equals p.ProductId
+                select new OrderViewModel
+                {
+                    OrderStatus = o.OrderStatus,
+                    TotalDiscount = c.TotalDiscount,
+                    TrackingNumber = o.TrackingNumber,
+                    OrderNumber = o.OrderNumber,
+                    OrderDate = o.OrderDate,
+                    Items = o.Items,
+                    TotalPrice = c.TotalPrice,
+                    UserId = userId,
+                    Quantity = ci.Quantity,
+                    Discount = ci.Discount,
+                    AmountOfItems = c.AmountOfItems,
+                    DiscountPrice = p.DiscountPrice,
+                    ProductPrice = p.ProductPrice,
+                    ProductName = p.ProductName,
+                    ShippingAdress = o.ShippingAdress,
+                    City = o.City,
+                    ZipCode = o.ZipCode
+                }
+            ).ToList();
 
             if (checkoutItems != null)
             {
@@ -212,42 +234,48 @@ namespace TeamBugBusters.Controllers
             }
             else
             {
-                var newCheckoutItem = new CartItems
+                var newCheckoutItem = new Order
                 {
-                    FkProductId = checkoutId.Value,
-                    FkCartId = GetOrCreateCartId(),
-                    UserId = userId,
+                    FkCartId = checkoutId.Value,
+                    OrderId = GetOrCreateCheckoutId(),
+                    //UserId = userId
                 };
 
-                _context.CartItems.Add(newCheckoutItem);
+                _context.Orders.Add(newCheckoutItem);
             }
 
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Checkouts");
         }
 
         private int GetOrCreateCheckoutId()
         {
-            var checkout = _context.CartItems.FirstOrDefault();
+            var checkout = _context.Orders.FirstOrDefault();
             if (checkout == null)
             {
-                checkout = new CartItems();
-                _context.CartItems.Add(checkout);
+                checkout = new Order();
+                _context.Orders.Add(checkout);
                 _context.SaveChanges();
             }
-            return checkout.CartItemsId;
+            return checkout.OrderId;
         }
 
-        //public async Task <PlaceOrder> (int? orderId)
-        //{
-        //    if (orderId == null)
-        //    {
-        //        return NotFound();
-        //    }
-            
-        //    return View();
-        //}
+        public async Task <IActionResult> PlaceOrder(int? orderId)
+        {
+            if (orderId == null)
+            {
+                return NotFound();
+            }
+
+            bool orderPlaced = false;
+
+
+
+            TempData["orderPlaced"] = orderPlaced;
+
+            return View();
+        }
 
         private bool ProductExists(int id)
         {
