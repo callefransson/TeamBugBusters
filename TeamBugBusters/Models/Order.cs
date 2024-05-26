@@ -22,10 +22,17 @@ namespace TeamBugBusters.Models
         public DateTime OrderDate { get; set; }
         public int Items { get; set; }
         public double TotalPrice { get; set; }
+        
+        [Required]
         [StringLength(200, ErrorMessage = "Shipping adress can't be longer than 200 characters ")]
         public string ShippingAdress { get; set; }
+        
+        [Required]
         [StringLength(200, ErrorMessage = "Shipping adress can't be longer than 200 characters ")]
         public string City { get; set; }
+        
+        [Required]
+        [Range(10000, 99999, ErrorMessage = "Please enter a valid zip code")]
         public int ZipCode { get; set; }
 
         [ForeignKey("Cart")]

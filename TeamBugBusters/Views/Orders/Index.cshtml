@@ -2,9 +2,20 @@
 
 @{
     ViewData["Title"] = "Order";
+    bool orderPlaced = TempData["orderPlaced"] as bool? ?? false;
 }
 
 <h1>Your Order!</h1>
+
+@if (orderPlaced)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Your order has been placed!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 
 <div>
     <h3>Thank you for your order!</h3>
@@ -42,6 +53,11 @@
         
     </tbody>
 </table>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
 
