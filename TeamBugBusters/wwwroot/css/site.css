@@ -20,3 +20,55 @@ html {
 body {
   margin-bottom: 60px;
 }
+.logga{
+  height: 70px;
+  width: auto;
+  padding-right: 20px;
+}
+
+.nav-item{
+  background-color: #e9f2ff;
+  border-radius: 0px;
+  padding: 0; 
+  
+  text-decoration: none; 
+ 
+  text-align: center; 
+  
+  transition: background-color 0.3s, transform 0.3s; 
+  height: 50px; 
+  width: 120px; 
+  margin: 0 15px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+}
+.nav-item:hover{
+  background-color: #4D869C;
+}
+
+.text-dark{
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+a{padding: 20px;
+margin: 20px;
+}
+
+.navbar-nav flex-grow-1{
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 0px;
+}
+.navbar-custom .navbar-nav .nav-item {
+  background-color: black;
+  color: black;
+}
+.mb-3{
+  background-color: #e9f2ff;
+  color: #e9f2ff;
+}
