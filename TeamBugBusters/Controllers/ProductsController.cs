@@ -59,7 +59,7 @@ namespace TeamBugBusters.Controllers
                 var newCartItem = new CartItems
                 {
                     FkProductId = productId.Value,
-                    FkCartId = GetOrCreateCartId(),
+                    FkCartId = GetOrCreateCartId(userId),
                     UserId = userId,
                     Quantity = 1
                 };
@@ -75,12 +75,15 @@ namespace TeamBugBusters.Controllers
             return RedirectToAction("Index");
         }
 
-        private int GetOrCreateCartId()
+        private int GetOrCreateCartId(string userId)
         {
-            var cart = _context.Carts.FirstOrDefault();
+            var cart = _context.Carts.FirstOrDefault(c=>c.UserId == userId);
             if (cart == null)
             {
-                cart = new Cart();
+                cart = new Cart
+                {
+                    UserId = userId
+                };
                 _context.Carts.Add(cart);
                 _context.SaveChanges();
             }
@@ -191,62 +194,6 @@ namespace TeamBugBusters.Controllers
 
             TempData["isRemoved"] = true;
             return RedirectToAction(nameof(ShowCart));
-        }
-
-        public IActionResult ContinueToCheckout(int? checkoutId) 
-        {
-            //if (checkoutId == null)
-            //{
-            //    return NotFound();
-            //}
-
-            var userId = _userManager.GetUserId(User);
-            var checkoutItems = (
-                from o in _context.Orders
-                join c in _context.Carts on o.OrderId equals c.CartId
-                join ci in _context.CartItems on o.OrderId equals ci.CartItemsId
-                join p in _context.Products on ci.FkProductId equals p.ProductId
-                select new OrderViewModel
-                {
-                    OrderStatus = o.OrderStatus,
-                    TotalDiscount = c.TotalDiscount,
-                    TrackingNumber = o.TrackingNumber,
-                    OrderNumber = o.OrderNumber,
-                    OrderDate = o.OrderDate,
-                    Items = o.Items,
-                    TotalPrice = c.TotalPrice,
-                    UserId = userId,
-                    Quantity = ci.Quantity,
-                    Discount = ci.Discount,
-                    AmountOfItems = c.AmountOfItems,
-                    DiscountPrice = p.DiscountPrice,
-                    ProductPrice = p.ProductPrice,
-                    ProductName = p.ProductName,
-                    ShippingAdress = o.ShippingAdress,
-                    City = o.City,
-                    ZipCode = o.ZipCode
-                }
-            ).ToList();
-
-            if (checkoutItems != null)
-            {
-                _context.Update(checkoutItems);
-            }
-            else
-            {
-                var newCheckoutItem = new Order
-                {
-                    FkCartId = checkoutId.Value,
-                    OrderId = GetOrCreateCheckoutId(),
-                    //UserId = userId
-                };
-
-                _context.Orders.Add(newCheckoutItem);
-            }
-
-            _context.SaveChangesAsync();
-
-            return RedirectToAction("Index", "Checkouts");
         }
 
         private int GetOrCreateCheckoutId()

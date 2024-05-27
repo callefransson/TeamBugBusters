@@ -151,8 +151,40 @@ namespace TeamBugBusters.Controllers
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
             if (id == null)
+            {
+                return NotFound();
+            }
+            var product = await _context.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(m => m.ProductId == id);
+            
+            if (product == null)
+            {
+                return NotFound();
+            }
+            var viewModel = new EditProductViewModel
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                CategoryId = product.FkCategoryId,
+                ProductDescription = product.ProductDescription,
+                ProductStock = product.ProductStock,
+                ProductPrice = product.ProductPrice
+            };
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
+
+            return View(viewModel);
+        }
+
+        // POST: Products/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, EditProductViewModel viewModel)
+        {
+            if (id != viewModel.ProductId)
             {
                 return NotFound();
             }
@@ -162,28 +194,36 @@ namespace TeamBugBusters.Controllers
             {
                 return NotFound();
             }
-            return View(product);
-        }
 
-        // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, int? categoryId, Product product)
-        {
-            if (id != product.ProductId || categoryId == null)
-            {
-                return NotFound();
-            }
-            product.FkCategoryId = categoryId.Value;
-            if (product != null)
+            product.ProductName = viewModel.ProductName;
+            product.FkCategoryId = viewModel.CategoryId;
+            product.ProductDescription = viewModel.ProductDescription;
+            product.ProductStock = viewModel.ProductStock;
+            product.ProductPrice = viewModel.ProductPrice;
+
+            try
             {
                 _context.Update(product);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
             }
-            return View(product);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(viewModel.ProductId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ProductExists(int id)
+        {
+            return _context.Products.Any(e => e.ProductId == id);
         }
 
         // GET: Products/Delete/5

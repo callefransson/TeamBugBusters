@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamBugBusters.Data;
 
@@ -11,9 +12,11 @@ using TeamBugBusters.Data;
 namespace TeamBugBusters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240526091552_Added properties to InputModel")]
+    partial class AddedpropertiestoInputModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,6 +223,44 @@ namespace TeamBugBusters.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TeamBugBusters.Models.Admin", b =>
+                {
+                    b.Property<int>("AdminId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminId"));
+
+                    b.Property<string>("AdminEmail")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("AdminFullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("AdminPersonalNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AdminId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Admins");
+                });
+
             modelBuilder.Entity("TeamBugBusters.Models.Cart", b =>
                 {
                     b.Property<int>("CartId")
@@ -228,8 +269,14 @@ namespace TeamBugBusters.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AmountOfItems")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TotalDiscount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalPrice")
+                        .HasColumnType("int");
 
                     b.HasKey("CartId");
 
@@ -243,6 +290,9 @@ namespace TeamBugBusters.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemsId"));
+
+                    b.Property<int?>("Discount")
+                        .HasColumnType("int");
 
                     b.Property<int?>("FkCartId")
                         .HasColumnType("int");
@@ -285,6 +335,49 @@ namespace TeamBugBusters.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("TeamBugBusters.Models.Customer", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"));
+
+                    b.Property<string>("CustomerAdress")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CustomerEmail")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CustomerFullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CustomerPassword")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CustomerPersonalNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CustomerPhone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("Customers");
+                });
+
             modelBuilder.Entity("TeamBugBusters.Models.Order", b =>
                 {
                     b.Property<int>("OrderId")
@@ -299,6 +392,9 @@ namespace TeamBugBusters.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("FkCartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Items")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("OrderDate")
@@ -324,18 +420,12 @@ namespace TeamBugBusters.Migrations
                     b.Property<Guid>("TrackingNumber")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ZipCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ZipCode")
+                        .HasColumnType("int");
 
                     b.HasKey("OrderId");
 
                     b.HasIndex("FkCartId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -365,6 +455,9 @@ namespace TeamBugBusters.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<int?>("ProductDiscount")
+                        .HasColumnType("int");
+
                     b.Property<string>("ProductImage")
                         .HasColumnType("nvarchar(max)");
 
@@ -376,7 +469,7 @@ namespace TeamBugBusters.Migrations
                     b.Property<decimal>("ProductPrice")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int>("ProductStock")
+                    b.Property<int?>("ProductStock")
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
@@ -384,6 +477,24 @@ namespace TeamBugBusters.Migrations
                     b.HasIndex("FkCategoryId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("TeamBugBusters.Models.Role", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -437,10 +548,17 @@ namespace TeamBugBusters.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TeamBugBusters.Models.Admin", b =>
+                {
+                    b.HasOne("TeamBugBusters.Models.Role", null)
+                        .WithMany("Admin")
+                        .HasForeignKey("RoleId");
+                });
+
             modelBuilder.Entity("TeamBugBusters.Models.CartItems", b =>
                 {
                     b.HasOne("TeamBugBusters.Models.Cart", "Cart")
-                        .WithMany()
+                        .WithMany("CartItems")
                         .HasForeignKey("FkCartId");
 
                     b.HasOne("TeamBugBusters.Models.Product", "Product")
@@ -468,13 +586,7 @@ namespace TeamBugBusters.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Cart");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TeamBugBusters.Models.Product", b =>
@@ -488,9 +600,19 @@ namespace TeamBugBusters.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("TeamBugBusters.Models.Cart", b =>
+                {
+                    b.Navigation("CartItems");
+                });
+
             modelBuilder.Entity("TeamBugBusters.Models.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("TeamBugBusters.Models.Role", b =>
+                {
+                    b.Navigation("Admin");
                 });
 #pragma warning restore 612, 618
         }

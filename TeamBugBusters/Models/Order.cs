@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TeamBugBusters.Data;
 
 namespace TeamBugBusters.Models
 {
@@ -20,7 +22,6 @@ namespace TeamBugBusters.Models
         public Guid TrackingNumber { get; set; }
         public int OrderNumber { get; set; }
         public DateTime OrderDate { get; set; }
-        public int Items { get; set; }
         public double TotalPrice { get; set; }
         
         [Required]
@@ -33,10 +34,12 @@ namespace TeamBugBusters.Models
         
         [Required]
         [Range(10000, 99999, ErrorMessage = "Please enter a valid zip code")]
-        public int ZipCode { get; set; }
+        public string ZipCode { get; set; }
 
         [ForeignKey("Cart")]
         public int FkCartId { get; set; }
         public Cart? Cart { get; set; }
+        public string? UserId { get; set; }
+        public IdentityUser? User { get; set; }
     }
 }
