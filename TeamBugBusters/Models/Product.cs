@@ -13,8 +13,7 @@ namespace TeamBugBusters.Models
         [Required]
         [StringLength(250, ErrorMessage = "Description can't be longer than 250 characters")]
         public string ProductDescription { get; set; }
-        public int? ProductStock {  get; set; }
-        public int? ProductDiscount { get; set; }
+        public int ProductStock {  get; set; }
         [DataType(DataType.Date)]
         public DateTime? DiscountStartDate { get; set; }
         [DataType(DataType.Date)]

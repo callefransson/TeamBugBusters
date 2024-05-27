@@ -36,12 +36,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="ShowCart">Cart</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Checkouts" asp-action="Index">Checkout</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Order</a>
-                        </li>
+                       
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item dropdown">
@@ -53,7 +48,7 @@
                                         <a class="dropdown-item" asp-area="" asp-controller="Admins" asp-action="Index">Products</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Customers" asp-action="Index">Customers</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
