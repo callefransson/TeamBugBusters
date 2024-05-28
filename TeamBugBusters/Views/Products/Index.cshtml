@@ -73,7 +73,14 @@
                                     break;
                             }
                         </p>
-                        <a asp-action="AddToCart" asp-route-productId="@item.ProductId" class="btn btn-primary">Add to cart</a>
+                        @if(item.ProductStock > 0)
+                        {
+                            <a asp-action="AddToCart" asp-route-productId="@item.ProductId" class="btn btn-primary">Add to cart</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger disabled" aria-disabled="true">Add to cart</a>
+                        }
                     </div>
                 </div>
             }

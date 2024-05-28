@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TeamBugBusters.Data;
+using TeamBugBusters.Models;
 
 namespace TeamBugBusters.Controllers
 {
@@ -11,9 +13,23 @@ namespace TeamBugBusters.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var orders = await _context.Orders
+                              .Include(o => o.User)
+                              .ToListAsync();
+
+            var products = await _context.Products
+                .Include(p => p.Category)
+                .Where(p=>p.ProductStock < 5)
+                .ToListAsync();
+
+            var viewModel = new OrdersAndLowStockProductsViewModel
+            {
+                Orders = orders,
+                LowStockProducts = products
+            };
+            return View(viewModel);
         }
     }
 }

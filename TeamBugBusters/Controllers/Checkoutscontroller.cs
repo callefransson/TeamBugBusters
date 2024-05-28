@@ -88,9 +88,6 @@ namespace TeamBugBusters.Controllers
             _context.CartItems.RemoveRange(cartItems);
             await _context.SaveChangesAsync();
 
-            _context.Carts.Remove(cart);
-            await _context.SaveChangesAsync();
-
             var orderViewModel = new OrderViewModel
             {
                 OrderNumber = newOrder.OrderNumber,
