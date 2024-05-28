@@ -1,5 +1,99 @@
-﻿@model TeamBugBusters.Models.Product
+﻿@model OrdersAndLowStockProductsViewModel
 @{
     ViewData["Title"] = "Statistics";
 }
 
+<h1 class="display-4">Statistics</h1>
+<hr />
+<h3>All Orders</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                OrderNumber
+            </th>
+            <th>
+                TrackingNumber
+            </th>
+            <th>
+                OrderStatus
+            </th>
+            <th>
+                OrderDate
+            </th>
+            <th>
+                ShippingAddress
+            </th>
+            <th>
+                City
+            </th>
+            <th>
+               ZipCode
+            </th>
+            <th>
+                User
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Orders)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TrackingNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShippingAdress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ZipCode)
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<hr />
+<h3>Products soon or out of stock</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ProductName
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                Category
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model.LowStockProducts)
+        {
+            <tr>
+                <td>@product.ProductName</td>
+                <td>@product.ProductStock</td>
+                <td>@(product.Category != null ? product.Category.CategoryName : "No Category")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<hr />
+<h3>Most sold Product this week</h3>
