@@ -41,5 +41,9 @@ namespace TeamBugBusters.Models
         public Cart? Cart { get; set; }
         public string? UserId { get; set; }
         public IdentityUser? User { get; set; }
+
+        public string WeatherDescription { get; set; }
+        public double Temperature { get; set; }
+        public string WeatherIcon { get; set; }
     }
 }

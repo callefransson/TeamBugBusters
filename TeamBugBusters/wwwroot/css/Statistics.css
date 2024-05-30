@@ -1,0 +1,5 @@
+﻿.weather img {
+    filter: invert(70%);
+    width: 3rem;
+    height: 3rem;
+}

@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using TeamBugBusters.Data;
+using TeamBugBusters.Models;
+using TeamBugBusters.Services;
 using TeamBugBusters.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,10 @@ builder.Services.ConfigureApplicationCookie(option =>
     option.LogoutPath = $"/Identity/Account/Logout";
     option.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
+
+builder.Services.AddHttpClient<WeatherService>();
+builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
+
 builder.Services.AddRazorPages();
 var app = builder.Build();
 
