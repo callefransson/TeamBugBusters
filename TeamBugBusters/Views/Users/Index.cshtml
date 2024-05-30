@@ -4,9 +4,9 @@
     ViewData["Title"] = "Users";
 }
 
-<h1>Users</h1>
+<h1 class="display-4">Users</h1>
 
-<table class="table">
+<table class="table w-75">
     <thead>
         <tr>
             <th>UserName</th>
@@ -21,11 +21,6 @@
                 <td>@user.UserName</td>
                 <td>@user.Email</td>
                 <td>@user.PhoneNumber</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@user.UserId" class="btn btn-primary">Edit</a>
-                    <a asp-action="Details" asp-route-id="@user.UserId" class="btn btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@user.UserId" class="btn btn-danger">Delete</a>
-                </td>
             </tr>
         }
     </tbody>

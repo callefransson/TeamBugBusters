@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TeamBugBusters.Data;
+using TeamBugBusters.Migrations;
 using TeamBugBusters.Models;
 
 namespace TeamBugBusters.Controllers

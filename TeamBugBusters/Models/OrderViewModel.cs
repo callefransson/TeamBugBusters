@@ -1,4 +1,6 @@
-﻿namespace TeamBugBusters.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TeamBugBusters.Models
 {
     public class OrderViewModel
     {

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using System.Runtime.InteropServices.Marshalling;
 using TeamBugBusters.Data;
 using TeamBugBusters.Models;
+using TeamBugBusters.Services;
 
 namespace TeamBugBusters.Controllers
 {
@@ -11,11 +13,13 @@ namespace TeamBugBusters.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly WeatherService _weatherService;
 
-        public Checkoutscontroller(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public Checkoutscontroller(ApplicationDbContext context, UserManager<IdentityUser> userManager, WeatherService weatherService)
         {
             _context = context;
             _userManager = userManager;
+            _weatherService = weatherService;
         }
         public IActionResult Index()
         {
@@ -62,12 +66,16 @@ namespace TeamBugBusters.Controllers
                 return NotFound("No cart found for the current user.");
             }
 
-            var cartItems = _context.CartItems.Where(ci => ci.FkCartId == cart.CartId).ToList();
+            var cartItems = _context.CartItems
+            .Include(ci => ci.Product)
+            .Where(ci => ci.FkCartId == cart.CartId)
+            .ToList();
 
             if (cartItems.Count == 0)
             {
-                return RedirectToAction("EmptyCart");
+                return RedirectToAction("Index", "Products");
             }
+            var weatherInfo = await _weatherService.GetWeatherAsync(model.Address.City);
 
             var newOrder = new Order
             {
@@ -77,16 +85,35 @@ namespace TeamBugBusters.Controllers
                 ShippingAdress = model.Address.ShippingAddress,
                 City = model.Address.City,
                 ZipCode = model.Address.ZipCode,
-                OrderStatus = OrderStatus.Shipped,
+                OrderStatus = OrderStatus.Unconfirmed,
                 TrackingNumber = Guid.NewGuid(),
-                OrderNumber = new Random().Next(100000, 999999)
+                OrderNumber = new Random().Next(100000, 999999),
+                WeatherDescription = weatherInfo.Weather[0].Description,
+                Temperature = weatherInfo.Main.Temp,
+                WeatherIcon = weatherInfo.Weather[0].Icon,
             };
 
             _context.Orders.Add(newOrder);
             await _context.SaveChangesAsync();
 
+            foreach (var cartItem in cartItems)
+            {
+                var product = cartItem.Product;
+                if (product != null)
+                {
+                    product.ProductStock -= cartItem.Quantity;
+                    if (product.ProductStock < 0)
+                    {
+                        product.ProductStock = 0;
+                    }
+                    _context.Products.Update(product);
+                }
+            }
+
             _context.CartItems.RemoveRange(cartItems);
             await _context.SaveChangesAsync();
+
+            
 
             var orderViewModel = new OrderViewModel
             {
@@ -94,7 +121,7 @@ namespace TeamBugBusters.Controllers
                 TrackingNumber = newOrder.TrackingNumber,
                 OrderDate = newOrder.OrderDate,
                 ShippingAddress = newOrder.ShippingAdress,
-                OrderStatus = newOrder.OrderStatus
+                OrderStatus = newOrder.OrderStatus,
             };
 
             return View(new List<OrderViewModel> { orderViewModel });

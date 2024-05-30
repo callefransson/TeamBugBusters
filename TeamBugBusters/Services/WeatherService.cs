@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using TeamBugBusters.Models;
 
 namespace TeamBugBusters.Services
 {
@@ -7,10 +10,10 @@ namespace TeamBugBusters.Services
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
 
-        public WeatherService(HttpClient httpClient, IConfiguration configuration)
+        public WeatherService(HttpClient httpClient, IOptions<WeatherSettings> weatherSettings)
         {
             _httpClient = httpClient;
-            _apiKey = configuration["WeatherApiKey"];
+            _apiKey = weatherSettings.Value.ApiKey;
         }
 
         public async Task<WeatherInfo> GetWeatherAsync(string city)
@@ -21,22 +24,8 @@ namespace TeamBugBusters.Services
             var json = await response.Content.ReadAsStringAsync();
             var weatherInfo = JsonConvert.DeserializeObject<WeatherInfo>(json);
 
+
             return weatherInfo;
         }
-    }
-    public class WeatherInfo
-    {
-        public Main Main { get; set; }
-        public List<Weather> Weather { get; set; }
-    }
-
-    public class Main
-    {
-        public double Temp { get; set; }
-    }
-
-    public class Weather
-    {
-        public string Description { get; set; }
     }
 }
