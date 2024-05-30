@@ -21,11 +21,11 @@
 <h1 class="display-4">Our products</h1>
 <div class="row mt-5">
     <div class="col-sm-2">
-        <h1>Categories</h1>
+        <h1 class="mb-4">Categories</h1>
         @foreach(var category in distinctCategories)
         {
         <p class="card-text">
-            <a asp-action="FilterByCategory" asp-route-categoryId="@category.CategoryId">
+            <a asp-action="FilterByCategory" asp-route-categoryId="@category.CategoryId" class="text-dark">
                 @category.CategoryName
             </a>
         </p>
