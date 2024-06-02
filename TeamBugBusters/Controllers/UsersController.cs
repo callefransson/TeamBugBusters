@@ -18,6 +18,8 @@ namespace TeamBugBusters.Controllers
 
         public async Task<IActionResult> Index()
         {
+            //This method we display all the users that have been created
+            // I was going to add so we also can display what role all users have, but i didn't have time to fix that
             var users = await _userManager.Users.ToListAsync();
             var userRolesViewModel = new List<UserRolesViewModel>();
 

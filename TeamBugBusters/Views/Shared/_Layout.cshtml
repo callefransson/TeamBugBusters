@@ -33,7 +33,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="ShowCart">Cart</a>
                         </li>
-                       
+                       @*If user is logged in as Admin, we display more alternatives*@
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item dropdown">

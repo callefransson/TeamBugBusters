@@ -121,6 +121,7 @@ namespace TeamBugBusters.Controllers
         }
 
         // GET: Products/Create
+        [HttpGet]
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
@@ -149,6 +150,7 @@ namespace TeamBugBusters.Controllers
         }
 
         // GET: Products/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
