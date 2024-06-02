@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices.Marshalling;
 using TeamBugBusters.Data;
 using TeamBugBusters.Models;
@@ -27,7 +29,8 @@ namespace TeamBugBusters.Controllers
         }
         public IActionResult Checkout()
         {
-            var userId = _userManager.GetUserId(User);
+            // joins different tables with each other, creates a new view model to assign the values
+                        var userId = _userManager.GetUserId(User);
             var checkoutItems = (
                 from c in _context.Carts
                 join ci in _context.CartItems on c.CartId equals ci.FkCartId
@@ -57,7 +60,7 @@ namespace TeamBugBusters.Controllers
             {
                 return View("Checkout", model);
             }
-
+            // Get specific userId from _userManager 
             var userId = _userManager.GetUserId(User);
 
             var cart = _context.Carts.FirstOrDefault(c => c.UserId == userId);
@@ -75,8 +78,9 @@ namespace TeamBugBusters.Controllers
             {
                 return RedirectToAction("Index", "Products");
             }
+            //implementing a weather api that checks which city the user selected
             var weatherInfo = await _weatherService.GetWeatherAsync(model.Address.City);
-
+            // Creating a new order and assigning values to that user
             var newOrder = new Order
             {
                 UserId = userId,
@@ -92,16 +96,18 @@ namespace TeamBugBusters.Controllers
                 Temperature = weatherInfo.Main.Temp,
                 WeatherIcon = weatherInfo.Weather[0].Icon,
             };
-
+            // Adding that order to the database
             _context.Orders.Add(newOrder);
             await _context.SaveChangesAsync();
 
+            // a foreach loop that checks how many products the user bought and subtracts it from the number in stock
             foreach (var cartItem in cartItems)
             {
                 var product = cartItem.Product;
                 if (product != null)
                 {
                     product.ProductStock -= cartItem.Quantity;
+                    //Simple if so we can asure that items don't go backwards
                     if (product.ProductStock < 0)
                     {
                         product.ProductStock = 0;
@@ -109,12 +115,12 @@ namespace TeamBugBusters.Controllers
                     _context.Products.Update(product);
                 }
             }
-
+            // Removing cartitems for that user when the purchase has been successful
             _context.CartItems.RemoveRange(cartItems);
             await _context.SaveChangesAsync();
 
             
-
+            // New order viewmodel to send to the view so we can display the information
             var orderViewModel = new OrderViewModel
             {
                 OrderNumber = newOrder.OrderNumber,

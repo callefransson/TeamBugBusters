@@ -41,6 +41,9 @@
                         <h5 class="card-title">@item.ProductName</h5>
                         <p class="card-text">@item.ProductDescription</p>
 
+                        @*This if state checks if there is any active discount for each product, if there is then we display discountprice otherwise we display 
+                            the original price
+                        *@
                         @if (item.IsDiscountActive())
                         {
                             <span>Price: </span>
@@ -54,6 +57,9 @@
                         }
 
                         <p class="card-text">
+                            @*this switch case checks depending on how many products are left, 
+                              it shows it in different colors so it's easier to spot if there are few products left in stock
+                            *@
                             @switch (item.ProductStock)
                             {
                                 case int n when (n > 10):
@@ -73,6 +79,7 @@
                                     break;
                             }
                         </p>
+                        @*If a product is sold out we disable the button so user can't accedently add a product that are sold out*@
                         @if(item.ProductStock > 0)
                         {
                             <a asp-action="AddToCart" asp-route-productId="@item.ProductId" class="btn btn-primary">Add to cart</a>
